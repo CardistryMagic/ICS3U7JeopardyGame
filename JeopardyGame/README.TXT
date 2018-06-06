@@ -1,12 +1,9 @@
 ------------------------------------------------------------------------
-This is the project README file. Here, you should describe your project.
-Tell the reader (someone who does not know anything about this project)
-all he/she needs to know. The comments should usually include at least:
+ICS3U7 Jeopardy GUI Project
 ------------------------------------------------------------------------
 
-PROJECT TITLE:
-PURPOSE OF PROJECT:
-VERSION or DATE:
-HOW TO START THIS PROJECT:
-AUTHORS:
-USER INSTRUCTIONS:
+PROJECT TITLE: Jeopardy
+PURPOSE OF PROJECT: ICS3U7 Culminating Assignment
+VERSION or DATE: 1.0
+AUTHORS: Devdigvijay Singh and Varun Sekar
+USER INSTRUCTIONS: Open Project in BlueJ, and create a new instance of class SplashScreen
