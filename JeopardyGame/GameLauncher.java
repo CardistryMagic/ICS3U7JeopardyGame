@@ -3,6 +3,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.Toolkit;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
@@ -20,6 +21,7 @@ import javax.swing.JDialog;
 public class GameLauncher
 {
     /* class fields */
+    private static final int CATEGORY_PANEL_MARGINS = 10;
     private static final String[] ERROR_DIALOG_MESSAGES = {"Try again", "Quit"};
     private static final int FRAME_WIDTH = 1024;
     private static final int FRAME_HEIGHT = 574;
@@ -88,6 +90,23 @@ public class GameLauncher
     } // end of method displayErrorDialog() 
     
     /*
+     * Creates the check box panel for categories.
+     */
+    private void createCategoryPanel()
+    {
+        categoriesCheckBoxPanel = new JPanel();
+        categoriesCheckBoxPanel.setLayout(new GridLayout(0, 1, CATEGORY_PANEL_MARGINS, CATEGORY_PANEL_MARGINS));
+        categoryCheckBoxButtons = new JCheckBox[allCategories.length];
+        
+        for (int index = 0; index < allCategories.length; index++)
+        {
+            categoryCheckBoxButtons[index] = new JCheckBox(allCategories[index].getName());
+            categoryCheckBoxButtons[index].setSelected(true);
+            categoriesCheckBoxPanel.add(categoryCheckBoxButtons[index]);
+        } // end of for (int index = 0; index < allCategories.length; index++)
+    } // end of method createCategoryPanel()
+    
+    /*
      * Loads the necessary fonts to display the settings panel.
      */
     private void loadFonts()
@@ -110,6 +129,12 @@ public class GameLauncher
         gameLauncherFrame.setLocation(xLocation, yLocation);
 
         loadFonts();
+        
+        createCategoryPanel();
+        frameCenterPanel = new JPanel();
+        frameCenterPanel.setLayout(new FlowLayout());
+        frameCenterPanel.add(categoriesCheckBoxPanel);
+        gameLauncherFrame.add(frameCenterPanel, BorderLayout.CENTER);
 
         gameLauncherFrame.pack();
         gameLauncherFrame.setVisible(true);
