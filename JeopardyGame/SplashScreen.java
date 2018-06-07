@@ -55,6 +55,8 @@ public class SplashScreen
     public SplashScreen()
     {
         makeFrame();
+        intializeCategoryData();
+        showGameLauncher();
     }
 
     /* accessors */
@@ -62,6 +64,14 @@ public class SplashScreen
     /* mutators */
 
     /* private methods */
+    /*
+     * Opens the game launcher.
+     */
+    private void showGameLauncher()
+    {
+        loadingFrame.dispose();
+    } // end of method showGameLauncher()
+    
     /*
      * Quits the game.
      */
@@ -257,4 +267,4 @@ public class SplashScreen
         loadingFrame.setVisible(true);
     } // end of method makeFrame()
 
-}
+} // end of class SplashScreen

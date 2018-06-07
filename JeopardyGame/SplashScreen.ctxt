@@ -1,0 +1,25 @@
+#BlueJ class context
+comment0.target=SplashScreen
+comment0.text=\r\n\ A\ splash\ screen\ for\ initializing\ the\ data\ necessary\ for\ a\ game\ of\ jeopardy.\r\n\r\n\ @author\ Devdigvijay\ Singh\r\n\ @version\ 1.0\ 2018-06-06\r\n
+comment1.params=
+comment1.target=SplashScreen()
+comment1.text=\r\n\ Constructor\ for\ objects\ of\ class\ SplashScreen\r\n
+comment2.params=
+comment2.target=void\ showGameLauncher()
+comment2.text=\r\n\ Opens\ the\ game\ launcher.\r\n
+comment3.params=
+comment3.target=void\ quit()
+comment3.text=\r\n\ Quits\ the\ game.\r\n
+comment4.params=errorMessage
+comment4.target=void\ displayErrorDialog(java.lang.String)
+comment4.text=\r\n\ Display\ an\ error\ message\ in\ a\ dialog\ box\ with\ the\ option\ to\ try\ again\ or\ quit\ the\ program.\r\n\ \r\n\ @param\ errorMessage\ the\ error\ message\ to\ display\ in\ a\ dialog\ box;\ may\ not\ be\ <code>null</code>\r\n
+comment5.params=
+comment5.target=void\ loadFonts()
+comment5.text=\r\n\ Imports\ the\ fonts\ necessary\ to\ create\ the\ loading\ frame.\r\n
+comment6.params=
+comment6.target=void\ intializeCategoryData()
+comment6.text=\r\n\ Reads\ the\ data\ for\ the\ categories.\r\n
+comment7.params=
+comment7.target=void\ makeFrame()
+comment7.text=\r\n\ Creates\ and\ initializes\ the\ frame.\r\n
+numComments=8
