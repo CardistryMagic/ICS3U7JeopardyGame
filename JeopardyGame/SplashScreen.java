@@ -70,8 +70,20 @@ public class SplashScreen
     private void showGameLauncher()
     {
         loadingFrame.dispose();
+
+        Category[] allCategories = new Category[categories.size()];
+
+        int index = 0;
+
+        for (Category currentCategory : categories)
+        {
+            allCategories[index] = currentCategory;
+            index++;
+        } // end of for (Category currentCategory : categories)
+
+        new GameLauncher(allCategories);
     } // end of method showGameLauncher()
-    
+
     /*
      * Quits the game.
      */
@@ -119,7 +131,7 @@ public class SplashScreen
             displayErrorDialog("ERROR: Unable to locate font resources.");
         }
     } // end of method loadFonts()
-    
+
     /*
      * Reads the data for the categories.
      */
@@ -199,7 +211,7 @@ public class SplashScreen
                     for (Category currentCategory : categories)
                     {
                         Answer[] allAnswers = currentCategory.getAllAnswers();
-                        
+
                         for (int index = 0; index < allAnswers.length; index++)
                         {
                             if (allAnswers[index].getPossibleQuestions().length < JeopardyGame.QUESTION_COUNT)
@@ -208,7 +220,7 @@ public class SplashScreen
                             } // end of if (allAnswers[index].getPossibleQuestions.length < QUESTION_COUNT)
                         } // end of for (int index = 0; index < allAnswers.length; index++)
                     } // end of for (Category currentCategory : categories)
-                    
+
                     if (!sufficientNumberOfQuestions)
                     {
                         displayErrorDialog("ERROR: Some answers did not meet the minimum question count of " + JeopardyGame.QUESTION_COUNT);
@@ -216,7 +228,7 @@ public class SplashScreen
                     else if (categories.size() > JeopardyGame.CATEGORY_COUNT)
                     {
                         int categoryCount = 1;
-                        
+
                         for (Category currentCategory : categories)
                         {
                             if (categoryCount > categoryCount)

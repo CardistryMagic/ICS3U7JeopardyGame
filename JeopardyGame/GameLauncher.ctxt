@@ -1,0 +1,19 @@
+#BlueJ class context
+comment0.target=GameLauncher
+comment0.text=\r\n\ A\ game\ launcher\ to\ start\ a\ game\ of\ jeopardy.\r\n\r\n\ @author\ Devdigvijay\ Singh\r\n\ @version\ 1.0\ 2018-06-07\r\n
+comment1.params=categoryData
+comment1.target=GameLauncher(Category[])
+comment1.text=\r\n\ Creates\ a\ GameLauncher\ with\ the\ specified\ game\ data.\r\n
+comment2.params=
+comment2.target=void\ quit()
+comment2.text=\r\n\ Quits\ the\ game.\r\n
+comment3.params=errorMessage
+comment3.target=void\ displayErrorDialog(java.lang.String)
+comment3.text=\r\n\ Display\ an\ error\ message\ in\ a\ dialog\ box\ with\ the\ option\ to\ try\ again\ or\ quit\ the\ program.\r\n\ \r\n\ @param\ errorMessage\ the\ error\ message\ to\ display\ in\ a\ dialog\ box;\ may\ not\ be\ <code>null</code>\r\n
+comment4.params=
+comment4.target=void\ loadFonts()
+comment4.text=\r\n\ Loads\ the\ necessary\ fonts\ to\ display\ the\ settings\ panel.\r\n
+comment5.params=
+comment5.target=void\ makeFrame()
+comment5.text=\r\n\ Creates\ a\ frame\ for\ the\ game\ launcher.\r\n
+numComments=6
