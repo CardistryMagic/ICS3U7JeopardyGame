@@ -3,8 +3,16 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -27,6 +35,10 @@ public class GameLauncher
     private static final int FRAME_HEIGHT = 574;
     private static final int[] WINDOW_BACKGROUND_COLOR = {0,0,0};
     private static final String WINDOW_TITLE = "";
+    private static final String JEOPARDY_FONT_SOURCE = "resources/fonts/jeopardy.ttf";
+    private static final String JEOPARDY_TEXT = "Jeopardy!";
+    private static int JEOPARDY_FONT_SIZE = 150;
+    private static int[] JEOPARDY_FONT_COLOR = {255, 255, 255};
 
     /* instance fields */
     Category[] allCategories;
@@ -35,6 +47,9 @@ public class GameLauncher
     JFrame gameLauncherFrame;
     JPanel categoriesCheckBoxPanel;
     JPanel frameCenterPanel;
+    Font jeopardyFont;
+    JLabel jeopardyLogo;
+    JPanel jeopardyLogoPanel;
 
     /* constructors */
 
@@ -107,10 +122,22 @@ public class GameLauncher
     } // end of method createCategoryPanel()
     
     /*
-     * Loads the necessary fonts to display the settings panel.
+     * Imports the fonts necessary to create the loading frame.
      */
     private void loadFonts()
     {
+        try
+        {
+            jeopardyFont = Font.createFont(Font.TRUETYPE_FONT, new FileInputStream(new File(JEOPARDY_FONT_SOURCE))).deriveFont(Font.PLAIN, JEOPARDY_FONT_SIZE);
+        }
+        catch (IOException exception)
+        {
+            displayErrorDialog("ERROR: Unable to locate font resources.");
+        }
+        catch (FontFormatException exception)
+        {
+            displayErrorDialog("ERROR: Unable to locate font resources.");
+        }
     } // end of method loadFonts()
 
     /*
@@ -129,6 +156,16 @@ public class GameLauncher
         gameLauncherFrame.setLocation(xLocation, yLocation);
 
         loadFonts();
+        
+        jeopardyLogo = new JLabel(JEOPARDY_TEXT);
+        jeopardyLogo.setFont(jeopardyFont);
+        jeopardyLogo.setForeground(new Color(JEOPARDY_FONT_COLOR[0], JEOPARDY_FONT_COLOR[1], JEOPARDY_FONT_COLOR[2]));
+
+        jeopardyLogoPanel = new JPanel();
+        jeopardyLogoPanel.setLayout(new FlowLayout());
+        jeopardyLogoPanel.add(jeopardyLogo);
+        
+        gameLauncherFrame.add(jeopardyLogoPanel, BorderLayout.PAGE_START);
         
         createCategoryPanel();
         frameCenterPanel = new JPanel();

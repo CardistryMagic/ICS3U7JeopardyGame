@@ -6,7 +6,6 @@ import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.Toolkit;
 import java.io.File;
-import java.io.IOException;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -271,7 +270,6 @@ public class SplashScreen
 
         jeopardyLogoPanel = new JPanel();
         jeopardyLogoPanel.add(jeopardyLogo);
-        jeopardyLogoPanel.setBorder(new EmptyBorder(100, 100, 100, 100));
 
         loadingFrame.add(jeopardyLogo);
 
