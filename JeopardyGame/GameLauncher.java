@@ -33,6 +33,7 @@ import javax.swing.JDialog;
 public class GameLauncher
 {
     /* class fields */
+    
     private static final int CATEGORY_PANEL_MARGINS = 10;
     private static final String[] ERROR_DIALOG_MESSAGES = {"Try again", "Quit"};
     private static final int FRAME_WIDTH = 1024;
@@ -45,7 +46,7 @@ public class GameLauncher
     private static int[] FONT_COLOR = {255, 255, 255};
     private static final String CATEGORY_FONT_SOURCE = "resources/fonts/carson_d.Ttf";
     private static final int CATEGORY_FONT_SIZE = 28;
-    private static final int JEOPARDY_BANNER_HEIGHT = 160;
+    private static final int JEOPARDY_BANNER_HEIGHT = 300;
     private static final int CHECK_BOX_HEIGHT = 65;
     private static final int BOTTOM_PANEL_HEIGHT = 100;
     private static final String START_GAME_TEXT = "LAUNCH GAME";
@@ -56,8 +57,19 @@ public class GameLauncher
     private static final int SMALL_BUTTON_WIDTH = 200;
     private static final int SMALL_BUTTON_HEIGHT = 35;
     private static final int CONTROL_PANEL_MARGINS = 10;
+    private static final int NUMBER_OF_PLAYERS_PANEL_MARGINS = 15;
+    private static final String HEADING_LABEL_FONT_NAME = "Arial";
+    private static final int HEADING_LABEL_FONT_SIZE = 48;
+    private static final String CATEGORY_HEADING_LABEL_TEXT = "Categories";
+    private static final String NUMBER_OF_PLAYERS_HEADING_LABEL_TEXT = "Number of Players";
+    private static final String ADD_PLAYER_BUTTON_TEXT = "Add";
+    private static final String REMOVE_PLAYER_BUTTON_TEXT = "Remove";
+    private static int ADD_OR_REMOVE_BUTTON_WIDTH = 100;
+    private static int ADD_OR_REMOVE_BUTTON_HEIGHT = 35;
+    private static int CENTER_PANEL_MARGINS = 100;
 
     /* instance fields */
+    
     private Category[] allCategories;
     private JCheckBox[] categoryCheckBoxButtons;
     private ArrayList<Category> categoriesToUseInGame;
@@ -67,7 +79,7 @@ public class GameLauncher
     private Font jeopardyFont;
     private JLabel jeopardyLogo;
     private JPanel jeopardyLogoPanel;
-    private Font categoryLabelFont;
+    private Font labelFont;
     private int frameHeight;
     private int frameWidth;
     private JButton startGameButton;
@@ -76,6 +88,16 @@ public class GameLauncher
     private JButton reloadButton;
     private JPanel quitAndReloadPanel;
     private ControlPanelListener controlPanelListener;
+    private JButton addPlayerButton;
+    private JButton removePlayerButton;
+    private JLabel numberOfPlayersLabel;
+    private JPanel innerNumberOfPlayersPanel;
+    private JPanel outerNumberOfPlayersPanel;
+    private int numberOfPlayers;
+    private Font headingLabelFont;
+    private JLabel categoryHeadingLabel;
+    private JLabel numberOfPlayersHeadingLabel;
+    private NumericalGameOptionsListener numericalGameOptionsListener;
 
     /* constructors */
 
@@ -138,7 +160,8 @@ public class GameLauncher
         try
         {
             jeopardyFont = Font.createFont(Font.TRUETYPE_FONT, new FileInputStream(new File(JEOPARDY_FONT_SOURCE))).deriveFont(Font.PLAIN, JEOPARDY_FONT_SIZE);
-            categoryLabelFont = Font.createFont(Font.TRUETYPE_FONT, new FileInputStream(new File(CATEGORY_FONT_SOURCE))).deriveFont(Font.PLAIN, CATEGORY_FONT_SIZE);
+            labelFont = Font.createFont(Font.TRUETYPE_FONT, new FileInputStream(new File(CATEGORY_FONT_SOURCE))).deriveFont(Font.PLAIN, CATEGORY_FONT_SIZE);
+            headingLabelFont = new Font(HEADING_LABEL_FONT_NAME, Font.BOLD + Font.ITALIC, HEADING_LABEL_FONT_SIZE);
         }
         catch (IOException exception)
         {
@@ -157,6 +180,12 @@ public class GameLauncher
     {
         categoriesCheckBoxPanel = new JPanel();
         categoriesCheckBoxPanel.setLayout(new GridLayout(0, 1, CATEGORY_PANEL_MARGINS, CATEGORY_PANEL_MARGINS));
+        
+        categoryHeadingLabel = new JLabel(CATEGORY_HEADING_LABEL_TEXT);
+        categoryHeadingLabel.setFont(headingLabelFont);
+        categoryHeadingLabel.setForeground(new Color(FONT_COLOR[0], FONT_COLOR[1], FONT_COLOR[2]));
+        categoriesCheckBoxPanel.add(categoryHeadingLabel);
+        
         categoryCheckBoxButtons = new JCheckBox[allCategories.length];
         categoriesCheckBoxPanel.setBackground(new Color(WINDOW_BACKGROUND_COLOR[0], WINDOW_BACKGROUND_COLOR[1], WINDOW_BACKGROUND_COLOR[2]));
 
@@ -164,7 +193,7 @@ public class GameLauncher
         {
             categoryCheckBoxButtons[index] = new JCheckBox(allCategories[index].getName());
             categoryCheckBoxButtons[index].setSelected(true);
-            categoryCheckBoxButtons[index].setFont(categoryLabelFont);
+            categoryCheckBoxButtons[index].setFont(labelFont);
             categoryCheckBoxButtons[index].setBackground(new Color(WINDOW_BACKGROUND_COLOR[0], WINDOW_BACKGROUND_COLOR[1], WINDOW_BACKGROUND_COLOR[2]));
             categoryCheckBoxButtons[index].setForeground(new Color(FONT_COLOR[0], FONT_COLOR[1], FONT_COLOR[2]));
             categoriesCheckBoxPanel.add(categoryCheckBoxButtons[index]);
@@ -218,6 +247,50 @@ public class GameLauncher
 
         bottomControlPanel.add(quitAndReloadPanel);
     } // end of method createControlPanel()
+    
+    /*
+     * Creates the number of players panel.
+     */
+    private void createPlayerCountPanel()
+    {
+        numericalGameOptionsListener = new NumericalGameOptionsListener();
+        numberOfPlayers = JeopardyGame.MINIMUM_NUMBER_OF_PLAYERS;
+        
+        outerNumberOfPlayersPanel = new JPanel();
+        outerNumberOfPlayersPanel.setBackground(new Color(WINDOW_BACKGROUND_COLOR[0], WINDOW_BACKGROUND_COLOR[1], WINDOW_BACKGROUND_COLOR[2]));
+        outerNumberOfPlayersPanel.setLayout(new GridLayout(0, 1));
+        
+        numberOfPlayersHeadingLabel = new JLabel(NUMBER_OF_PLAYERS_HEADING_LABEL_TEXT);
+        numberOfPlayersHeadingLabel.setFont(headingLabelFont);
+        numberOfPlayersHeadingLabel.setForeground(new Color(FONT_COLOR[0], FONT_COLOR[1], FONT_COLOR[2]));
+        outerNumberOfPlayersPanel.add(numberOfPlayersHeadingLabel);
+        
+        innerNumberOfPlayersPanel = new JPanel();
+        innerNumberOfPlayersPanel.setLayout(new GridLayout(0, 3, NUMBER_OF_PLAYERS_PANEL_MARGINS, NUMBER_OF_PLAYERS_PANEL_MARGINS));
+        innerNumberOfPlayersPanel.setBackground(new Color(WINDOW_BACKGROUND_COLOR[0], WINDOW_BACKGROUND_COLOR[1], WINDOW_BACKGROUND_COLOR[2]));
+        
+        removePlayerButton = new JButton(REMOVE_PLAYER_BUTTON_TEXT);
+        removePlayerButton.setPreferredSize(new Dimension(ADD_OR_REMOVE_BUTTON_WIDTH, ADD_OR_REMOVE_BUTTON_HEIGHT));
+        removePlayerButton.setFont(labelFont);
+        removePlayerButton.addActionListener(numericalGameOptionsListener);
+        removePlayerButton.setEnabled(false);
+        innerNumberOfPlayersPanel.add(removePlayerButton);
+        
+        numberOfPlayersLabel = new JLabel(Integer.toString(numberOfPlayers));
+        numberOfPlayersLabel.setFont(labelFont);
+        numberOfPlayersLabel.setForeground(new Color(FONT_COLOR[0], FONT_COLOR[1], FONT_COLOR[2]));
+        numberOfPlayersLabel.setHorizontalAlignment(JLabel.CENTER);
+        innerNumberOfPlayersPanel.add(numberOfPlayersLabel);
+                
+        addPlayerButton = new JButton(ADD_PLAYER_BUTTON_TEXT);
+        addPlayerButton.setPreferredSize(new Dimension(ADD_OR_REMOVE_BUTTON_WIDTH, ADD_OR_REMOVE_BUTTON_HEIGHT));
+        addPlayerButton.setFont(labelFont);
+        addPlayerButton.addActionListener(numericalGameOptionsListener);
+        innerNumberOfPlayersPanel.add(addPlayerButton);
+        
+        outerNumberOfPlayersPanel.add(innerNumberOfPlayersPanel);
+        
+    } // end of method createPlayerCountPanel()
 
     /*
      * Creates a frame for the game launcher.
@@ -246,13 +319,18 @@ public class GameLauncher
         gameLauncherFrame.add(bottomControlPanel, BorderLayout.PAGE_END);
 
         frameCenterPanel = new JPanel();
-        frameCenterPanel.setLayout(new FlowLayout());
+        frameCenterPanel.setLayout(new FlowLayout(FlowLayout.CENTER, CENTER_PANEL_MARGINS, 0));
         frameCenterPanel.setBackground(new Color(WINDOW_BACKGROUND_COLOR[0], WINDOW_BACKGROUND_COLOR[1], WINDOW_BACKGROUND_COLOR[2]));
 
         createCategoryPanel();
         frameCenterPanel.add(categoriesCheckBoxPanel);
+        
+        createPlayerCountPanel();
+        frameCenterPanel.add(outerNumberOfPlayersPanel);
 
         gameLauncherFrame.add(frameCenterPanel, BorderLayout.CENTER);
+        
+        
 
         gameLauncherFrame.pack();
         gameLauncherFrame.setVisible(true);
@@ -280,4 +358,38 @@ public class GameLauncher
             } // end of if (source == reloadButton)
         } // end of method actionPerformed(ActionEvent event)
     } // end of class ControlPanelListener implements ActionListener
+    
+    /*
+     * Listens to events from the numerical game choices panel.
+     */
+    private class NumericalGameOptionsListener implements ActionListener
+    {
+        public void actionPerformed(ActionEvent event)
+        {
+            Object source = event.getSource();
+            
+            if (source == addPlayerButton)
+            {
+                numberOfPlayers++;
+                numberOfPlayersLabel.setText(Integer.toString(numberOfPlayers));
+                
+                if (numberOfPlayers == JeopardyGame.MAXIMUM_NUMBER_OF_PLAYERS)
+                {
+                    addPlayerButton.setEnabled(false);
+                }
+                removePlayerButton.setEnabled(true);
+            } // end of if (source == addPlayerButton)
+            else if (source == removePlayerButton)
+            {
+                numberOfPlayers--;
+                numberOfPlayersLabel.setText(Integer.toString(numberOfPlayers));
+                
+                if (numberOfPlayers == JeopardyGame.MINIMUM_NUMBER_OF_PLAYERS)
+                {
+                    removePlayerButton.setEnabled(false);
+                }
+                addPlayerButton.setEnabled(true);
+            } // end of if (source == removePlayerButton)
+        } // end of method actionPerformed(ActionEvent event)
+    } // end of class NumericalGameOptionsListener
 } // end of class GameLauncher

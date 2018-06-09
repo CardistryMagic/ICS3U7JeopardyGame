@@ -23,14 +23,24 @@ public class JeopardyGame
     public static final int CATEGORY_COUNT = 5;
     
     /**
+     * The minimum number of players.
+     */
+    public static final int MINIMUM_NUMBER_OF_PLAYERS = 1;
+    
+    /**
+     * The minimum number of rounds.
+     */
+    public static final int MINIMUM_NUMBER_OF_ROUNDS = 1;
+    
+    /**
      * The maximum number of players.
      */
-    public static final int MAX_NUMBER_OF_PLAYERS = 5;
+    public static final int MAXIMUM_NUMBER_OF_PLAYERS = 5;
     
     /**
      * The maximum number of rounds.
      */
-    public static final int MAX_NUMBER_OF_ROUNDS = 5;
+    public static final int MAXIMUM_NUMBER_OF_ROUNDS = 5;
     
     /**
      * The number of answers per category.
