@@ -17,6 +17,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -37,7 +38,7 @@ public class GameLauncher
     private static final int FRAME_WIDTH = 1024;
     private static final int FRAME_HEIGHT = 574;
     private static final int[] WINDOW_BACKGROUND_COLOR = {0,0,0};
-    private static final String WINDOW_TITLE = "";
+    private static final String WINDOW_TITLE = "Jeopardy Game Launcher";
     private static final String JEOPARDY_FONT_SOURCE = "resources/fonts/jeopardy.ttf";
     private static final String JEOPARDY_TEXT = "Jeopardy!";
     private static int JEOPARDY_FONT_SIZE = 150;
