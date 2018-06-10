@@ -74,7 +74,7 @@ public class GameLauncher
 
     private Category[] allCategories;
     private JCheckBox[] categoryCheckBoxButtons;
-    private ArrayList<Category> categoriesToUseInGame;
+    private Category[] categoriesToUseInGame;
     private JFrame gameLauncherFrame;
     private JPanel categoriesCheckBoxPanel;
     private JPanel frameCenterPanel;
@@ -116,9 +116,7 @@ public class GameLauncher
     private JLabel numberOfAnswersHeadingLabel;
     private JLabel numberOfAnswersLabel;
 
-
     /* constructors */
-
     /**
      * Creates a GameLauncher with the specified game data.
      */
@@ -172,9 +170,56 @@ public class GameLauncher
 
     private void launchGame()
     {
-      gameLauncherFrame.dispose();
-      // new JeopardyGame();
-    }
+
+        int numberOfCategoriesToUse = 0;
+        for (int categoryIndex = 0; categoryIndex < categoryCheckBoxButtons.length; categoryIndex++)
+        {
+            if (categoryCheckBoxButtons[categoryIndex].isSelected())
+            {
+                numberOfCategoriesToUse++;
+            } // end of if (categoryCheckBoxButtons[categoryIndex].isSelected())
+        } // end of for (int categoryIndex = 0; categoryIndex < categoryCheckBoxButtons.length; categoryIndex++)
+
+        if (numberOfCategoriesToUse < JeopardyGame.MINIMUM_NUMBER_OF_CATEGORIES)
+        {
+            createWarningDialog("ERROR: The minimum amount of " + JeopardyGame.MINIMUM_NUMBER_OF_CATEGORIES + " was not met. Please try again.");
+        }
+        else if (numberOfCategoriesToUse > JeopardyGame.MAXIMUM_NUMBER_OF_CATEGORIES)
+        {
+            createWarningDialog("ERROR: The maximum amount of " + JeopardyGame.MAXIMUM_NUMBER_OF_CATEGORIES + " was exceeded. Please try again.");
+        }
+        else
+        {
+            categoriesToUseInGame = new Category[numberOfCategoriesToUse];
+
+            int index = 0;
+
+            for (int categoryIndex = 0; categoryIndex < categoryCheckBoxButtons.length; categoryIndex++)
+            {
+                if (categoryCheckBoxButtons[categoryIndex].isSelected())
+                {
+                    categoriesToUseInGame[index] = allCategories[categoryIndex];
+                    index++;
+                } // end of if (categoryCheckBoxButtons[categoryIndex].isSelected())
+            } // end of for (int categoryIndex = 0; categoryIndex < categoryCheckBoxButtons.length; categoryIndex++)
+
+            gameLauncherFrame.dispose();
+            new JeopardyGame(categoriesToUseInGame, allCategories, numberOfPlayers, numberOfRounds, numberOfAnswers, 1);
+        }
+    } // end of method launchGame()
+
+    /*
+     * Creates a warning dialog with the specified message.
+     *
+     * @param warningDialogText the text of the warning dialog; may not be <code>null</code>
+     */
+    public void createWarningDialog(String warningDialogText)
+    {
+        if (warningDialogText != null)
+        {
+            JOptionPane.showMessageDialog(null, warningDialogText, "Warning",JOptionPane.ERROR_MESSAGE);
+        }
+    } // end of method createWarningDialog(String warningDialogText)
 
     /*
      * Imports the fonts necessary to create the loading frame.
@@ -360,44 +405,44 @@ public class GameLauncher
     /*
      * Creates the number of answers panel.
      */
-     private void createAnswerCountPanel()
-     {
-       numberOfAnswers = JeopardyGame.MINIMUM_NUMBER_OF_ANSWERS;
+    private void createAnswerCountPanel()
+    {
+        numberOfAnswers = JeopardyGame.MINIMUM_NUMBER_OF_ANSWERS;
 
-       outerNumberOfAnswersPanel = new JPanel();
-       outerNumberOfAnswersPanel.setBackground(new Color(WINDOW_BACKGROUND_COLOR[0], WINDOW_BACKGROUND_COLOR[1], WINDOW_BACKGROUND_COLOR[2]));
-       outerNumberOfAnswersPanel.setLayout(new GridLayout(0, 1));
+        outerNumberOfAnswersPanel = new JPanel();
+        outerNumberOfAnswersPanel.setBackground(new Color(WINDOW_BACKGROUND_COLOR[0], WINDOW_BACKGROUND_COLOR[1], WINDOW_BACKGROUND_COLOR[2]));
+        outerNumberOfAnswersPanel.setLayout(new GridLayout(0, 1));
 
-       numberOfAnswersHeadingLabel = new JLabel(NUMBER_OF_ANSWERS_HEADING_LABEL_TEXT);
-       numberOfAnswersHeadingLabel.setFont(headingLabelFont);
-       numberOfAnswersHeadingLabel.setForeground(new Color(FONT_COLOR[0], FONT_COLOR[1], FONT_COLOR[2]));
-       outerNumberOfAnswersPanel.add(numberOfAnswersHeadingLabel);
+        numberOfAnswersHeadingLabel = new JLabel(NUMBER_OF_ANSWERS_HEADING_LABEL_TEXT);
+        numberOfAnswersHeadingLabel.setFont(headingLabelFont);
+        numberOfAnswersHeadingLabel.setForeground(new Color(FONT_COLOR[0], FONT_COLOR[1], FONT_COLOR[2]));
+        outerNumberOfAnswersPanel.add(numberOfAnswersHeadingLabel);
 
-       innerNumberOfAnswersPanel = new JPanel();
-       innerNumberOfAnswersPanel.setLayout(new GridLayout(0, 3, NUMERICAL_CHOICES_PANEL_MARGINS, NUMERICAL_CHOICES_PANEL_MARGINS));
-       innerNumberOfAnswersPanel.setBackground(new Color(WINDOW_BACKGROUND_COLOR[0], WINDOW_BACKGROUND_COLOR[1], WINDOW_BACKGROUND_COLOR[2]));
+        innerNumberOfAnswersPanel = new JPanel();
+        innerNumberOfAnswersPanel.setLayout(new GridLayout(0, 3, NUMERICAL_CHOICES_PANEL_MARGINS, NUMERICAL_CHOICES_PANEL_MARGINS));
+        innerNumberOfAnswersPanel.setBackground(new Color(WINDOW_BACKGROUND_COLOR[0], WINDOW_BACKGROUND_COLOR[1], WINDOW_BACKGROUND_COLOR[2]));
 
-       removeAnswerButton = new JButton(REMOVE_BUTTON_TEXT);
-       removeAnswerButton.setPreferredSize(new Dimension(ADD_OR_REMOVE_BUTTON_WIDTH, ADD_OR_REMOVE_BUTTON_HEIGHT));
-       removeAnswerButton.setFont(labelFont);
-       removeAnswerButton.addActionListener(numericalGameOptionsListener);
-       removeAnswerButton.setEnabled(false);
-       innerNumberOfAnswersPanel.add(removeAnswerButton);
+        removeAnswerButton = new JButton(REMOVE_BUTTON_TEXT);
+        removeAnswerButton.setPreferredSize(new Dimension(ADD_OR_REMOVE_BUTTON_WIDTH, ADD_OR_REMOVE_BUTTON_HEIGHT));
+        removeAnswerButton.setFont(labelFont);
+        removeAnswerButton.addActionListener(numericalGameOptionsListener);
+        removeAnswerButton.setEnabled(false);
+        innerNumberOfAnswersPanel.add(removeAnswerButton);
 
-       numberOfAnswersLabel = new JLabel(Integer.toString(numberOfAnswers));
-       numberOfAnswersLabel.setFont(labelFont);
-       numberOfAnswersLabel.setForeground(new Color(FONT_COLOR[0], FONT_COLOR[1], FONT_COLOR[2]));
-       numberOfAnswersLabel.setHorizontalAlignment(JLabel.CENTER);
-       innerNumberOfAnswersPanel.add(numberOfAnswersLabel);
+        numberOfAnswersLabel = new JLabel(Integer.toString(numberOfAnswers));
+        numberOfAnswersLabel.setFont(labelFont);
+        numberOfAnswersLabel.setForeground(new Color(FONT_COLOR[0], FONT_COLOR[1], FONT_COLOR[2]));
+        numberOfAnswersLabel.setHorizontalAlignment(JLabel.CENTER);
+        innerNumberOfAnswersPanel.add(numberOfAnswersLabel);
 
-       addAnswerButton = new JButton(ADD_PLAYER_BUTTON_TEXT);
-       addAnswerButton.setPreferredSize(new Dimension(ADD_OR_REMOVE_BUTTON_WIDTH, ADD_OR_REMOVE_BUTTON_HEIGHT));
-       addAnswerButton.setFont(labelFont);
-       addAnswerButton.addActionListener(numericalGameOptionsListener);
-       innerNumberOfAnswersPanel.add(addAnswerButton);
+        addAnswerButton = new JButton(ADD_PLAYER_BUTTON_TEXT);
+        addAnswerButton.setPreferredSize(new Dimension(ADD_OR_REMOVE_BUTTON_WIDTH, ADD_OR_REMOVE_BUTTON_HEIGHT));
+        addAnswerButton.setFont(labelFont);
+        addAnswerButton.addActionListener(numericalGameOptionsListener);
+        innerNumberOfAnswersPanel.add(addAnswerButton);
 
-       outerNumberOfAnswersPanel.add(innerNumberOfAnswersPanel);
-     } // end of method createAnswerCountPanel()
+        outerNumberOfAnswersPanel.add(innerNumberOfAnswersPanel);
+    } // end of method createAnswerCountPanel()
 
     /*
      * Creates the numerical choices panel.
@@ -484,9 +529,8 @@ public class GameLauncher
             } // end of if (source == reloadButton)
             else if (source == startGameButton)
             {
-              gameLauncherFrame.dispose();
-              launchGame();
-            }
+                launchGame();
+            } // end of if (source == startGameButton)
         } // end of method actionPerformed(ActionEvent event)
     } // end of class ControlPanelListener implements ActionListener
 
@@ -507,7 +551,7 @@ public class GameLauncher
                 if (numberOfPlayers == JeopardyGame.MAXIMUM_NUMBER_OF_PLAYERS)
                 {
                     addPlayerButton.setEnabled(false);
-                }
+                } // end of if (numberOfPlayers == JeopardyGame.MAXIMUM_NUMBER_OF_PLAYERS)
                 removePlayerButton.setEnabled(true);
             } // end of if (source == addPlayerButton)
             else if (source == removePlayerButton)
@@ -518,53 +562,53 @@ public class GameLauncher
                 if (numberOfPlayers == JeopardyGame.MINIMUM_NUMBER_OF_PLAYERS)
                 {
                     removePlayerButton.setEnabled(false);
-                }
+                } // end of if (numberOfPlayers == JeopardyGame.MINIMUM_NUMBER_OF_PLAYERS)
                 addPlayerButton.setEnabled(true);
             } // end of if (source == removePlayerButton)
             else if (source == addRoundButton)
             {
-              numberOfRounds++;
-              numberOfRoundsLabel.setText(Integer.toString(numberOfRounds));
+                numberOfRounds++;
+                numberOfRoundsLabel.setText(Integer.toString(numberOfRounds));
 
-              if (numberOfRounds == JeopardyGame.MAXIMUM_NUMBER_OF_ROUNDS)
-              {
-                  addRoundButton.setEnabled(false);
-              }
-              removeRoundButton.setEnabled(true);
-            }
+                if (numberOfRounds == JeopardyGame.MAXIMUM_NUMBER_OF_ROUNDS)
+                {
+                    addRoundButton.setEnabled(false);
+                } // end of if (numberOfRounds == JeopardyGame.MAXIMUM_NUMBER_OF_ROUNDS)
+                removeRoundButton.setEnabled(true);
+            } // end of if (source == addRoundButton)
             else if (source == removeRoundButton)
             {
-              numberOfRounds--;
-              numberOfRoundsLabel.setText(Integer.toString(numberOfRounds));
+                numberOfRounds--;
+                numberOfRoundsLabel.setText(Integer.toString(numberOfRounds));
 
-              if (numberOfRounds == JeopardyGame.MINIMUM_NUMBER_OF_ROUNDS)
-              {
-                  removeRoundButton.setEnabled(false);
-              }
-              addRoundButton.setEnabled(true);
-            }
+                if (numberOfRounds == JeopardyGame.MINIMUM_NUMBER_OF_ROUNDS)
+                {
+                    removeRoundButton.setEnabled(false);
+                } // end of if (numberOfRounds == JeopardyGame.MINIMUM_NUMBER_OF_ROUNDS)
+                addRoundButton.setEnabled(true);
+            } // end of if (source == removeRoundButton)
             else if (source == addAnswerButton)
             {
-              numberOfAnswers++;
-              numberOfAnswersLabel.setText(Integer.toString(numberOfAnswers));
+                numberOfAnswers++;
+                numberOfAnswersLabel.setText(Integer.toString(numberOfAnswers));
 
-              if (numberOfAnswers == JeopardyGame.MAXIMUM_NUMBER_OF_ANSWERS)
-              {
-                addAnswerButton.setEnabled(false);
-              }
-              removeAnswerButton.setEnabled(true);
-            }
+                if (numberOfAnswers == JeopardyGame.MAXIMUM_NUMBER_OF_ANSWERS)
+                {
+                    addAnswerButton.setEnabled(false);
+                } // end of if (numberOfAnswers == JeopardyGame.MAXIMUM_NUMBER_OF_ANSWERS)
+                removeAnswerButton.setEnabled(true);
+            } // end of if (source == addAnswerButton)
             else if (source == removeAnswerButton)
             {
-              numberOfAnswers--;
-              numberOfAnswersLabel.setText(Integer.toString(numberOfAnswers));
+                numberOfAnswers--;
+                numberOfAnswersLabel.setText(Integer.toString(numberOfAnswers));
 
-              if (numberOfAnswers == JeopardyGame.MINIMUM_NUMBER_OF_ANSWERS)
-              {
-                removeAnswerButton.setEnabled(false);
-              }
-              addAnswerButton.setEnabled(true);
-            }
+                if (numberOfAnswers == JeopardyGame.MINIMUM_NUMBER_OF_ANSWERS)
+                {
+                    removeAnswerButton.setEnabled(false);
+                } // end of if (numberOfAnswers == JeopardyGame.MINIMUM_NUMBER_OF_ANSWERS)
+                addAnswerButton.setEnabled(true);
+            } // end of if (source == removeAnswerButton)
         } // end of method actionPerformed(ActionEvent event)
     } // end of class NumericalGameOptionsListener
 } // end of class GameLauncher

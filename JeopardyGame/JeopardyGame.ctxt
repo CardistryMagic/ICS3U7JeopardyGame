@@ -1,7 +1,13 @@
 #BlueJ class context
 comment0.target=JeopardyGame
-comment0.text=\r\n\ Write\ a\ description\ of\ class\ JeopardyGame\ here.\r\n\r\n\ @author\ (your\ name)\r\n\ @version\ (a\ version\ number\ or\ a\ date)\r\n
+comment0.text=\r\n\ An\ object\ for\ the\ game\ of\ jeopardy.\r\n\r\n\ @author\ Devdigvijay\ Singh\r\n\ @version\ 1.0\ 2018-06-10\r\n
 comment1.params=
 comment1.target=JeopardyGame()
-comment1.text=\r\n\ Constructor\ for\ objects\ of\ class\ JeopardyGame\r\n
-numComments=2
+comment1.text=\r\n\ Creates\ a\ new\ JeopardyGame\ with\ default\ characteristics.\r\n
+comment2.params=chosenCategories\ allCategories\ numberOfPlayers\ numberOfRounds\ numberOfAnswers\ currentRoundNumber
+comment2.target=JeopardyGame(Category[],\ Category[],\ int,\ int,\ int,\ int)
+comment2.text=\r\n\ Creates\ a\ new\ JeopardyGame\ with\ the\ specified\ game\ data.\r\n\r\n\ @param\ chosenCategories\ the\ categories\ chosen\ in\ the\ game\ launcher\ to\ use\ in\ this\ game\ of\ jeopardy\r\n\ @param\ allCategories\ all\ the\ categories\ read\ from\ the\ data\ file\r\n\ @param\ numberOfPlayers\ the\ number\ of\ players\ in\ this\ game\ of\ jeopardy;\ must\ be\ higher\ than\ <code>JeopardyGame.MINIMUM_NUMBER_OF_PLAYERS</code>\ and\ lower\ than\ <code>JeopardyGame.MAXIMUM_NUMBER_OF_PLAYERS</code>\r\n\ @param\ numberOfRounds\ the\ number\ of\ rounds\ in\ this\ game\ of\ jeopardy;\ must\ be\ higher\ than\ <code>JeopardyGame.MINIMUM_NUMBER_OF_ROUNDS</code>\ and\ lower\ than\ <code>JeopardyGame.MAXIMUM_NUMBER_OF_ROUNDS</code>\r\n\ @param\ numberOfAnswers\ the\ number\ of\ answers\ per\ category\ in\ this\ game\ of\ jeopardy;\ must\ be\ higher\ than\ <code>JeopardyGame.MINIMUM_NUMBER_OF_ANSWERS\ and\ lower\ than\ <code>JeopardyGame.MAXIMUM_NUMBER_OF_ANSWERS</code>\r\n\ @param\ currentRoundNumber\ the\ current\ round\ number\r\n
+comment3.params=
+comment3.target=void\ makeFrame()
+comment3.text=\r\n\ Creates\ the\ frame\ for\ the\ jeopardy\ game.\r\n
+numComments=4
