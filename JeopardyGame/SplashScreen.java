@@ -93,12 +93,12 @@ public class SplashScreen
 
     /*
      * Display an error message in a dialog box with the option to try again or quit the program.
-     * 
+     *
      * @param errorMessage the error message to display in a dialog box; may not be <code>null</code>
      */
     public void displayErrorDialog(String errorMessage)
     {
-        int errorDialog = JOptionPane.showOptionDialog(loadingFrame, errorMessage, "Error",JOptionPane.YES_NO_OPTION, 
+        int errorDialog = JOptionPane.showOptionDialog(loadingFrame, errorMessage, "Error",JOptionPane.YES_NO_OPTION,
                 JOptionPane.ERROR_MESSAGE, null, ERROR_DIALOG_MESSAGES, ERROR_DIALOG_MESSAGES[0]);
 
         if (errorDialog == JOptionPane.YES_OPTION)
@@ -110,7 +110,7 @@ public class SplashScreen
         {
             quit();
         } // end of if (errorDialog == JOptionPane.YES_OPTION)
-    } // end of method displayErrorDialog() 
+    } // end of method displayErrorDialog()
 
     /*
      * Imports the fonts necessary to create the loading frame.
