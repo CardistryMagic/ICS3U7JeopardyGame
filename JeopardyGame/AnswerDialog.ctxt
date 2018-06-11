@@ -1,0 +1,10 @@
+#BlueJ class context
+comment0.target=AnswerDialog
+comment0.text=\r\n\ Write\ a\ description\ of\ class\ AnswerDisplay\ here.\r\n\ \r\n\ @author\ Varun\ and\ Dave\ \r\n\ @version\ 3.0\ 2018-06-04\r\n
+comment1.params=ans
+comment1.target=AnswerDialog(Answer)
+comment2.params=
+comment2.target=void\ makeFrame()
+comment3.params=
+comment3.target=Answer\ getAnswer()
+numComments=4

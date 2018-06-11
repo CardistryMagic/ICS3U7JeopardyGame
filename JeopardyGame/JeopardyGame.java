@@ -7,6 +7,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.Font;
+import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.FontFormatException;
@@ -26,6 +27,7 @@ import java.io.IOException;
 import javax.swing.JOptionPane;
 import javax.swing.JDialog;
 import javax.swing.border.EmptyBorder;
+import java.awt.Toolkit;
 
 /**
  * An object for the game of jeopardy.
@@ -114,13 +116,16 @@ public class JeopardyGame
     private static final int[] CATEGORY_TEXT_COLOR = {150, 150, 150};
     private static final int[] ANSWER_BUTTON_TEXT_COLOR = {255,200,0};
     private static final int ANSWER_PANEL_MARGINS = 10;
-    private static final String SETTINGS_BUTTON_TEXT = "Settings";
-    private static final String RESET_BUTTON_TEXT = "Reset";
+    private static final String SETTINGS_BUTTON_TEXT = "Change Settings";
+    private static final String RESET_GAME_BUTTON_TEXT = "Reset Game";
     private static final String QUIT_BUTTON_TEXT = "Quit";
-    private static final int[] CONTROL_PANEL_BUTTON_SIZE = {200, 40};
+    private static final int[] CONTROL_PANEL_BUTTON_SIZE = {150, 40};
+    private static final String RESET_ROUND_BUTTON_TEXT = "Reset Round";
+    private static final String HIGHSCORES_BUTTON_TEXT = "Highscores";
+    private static final int CONTROL_PANEL_MARGINS = 10;
 
     /* instance fields */
-    private JFrame jeopardyGameFrame;
+    private JFrame frame;
     private Category[] categoriesToUse;
     private Category[] allCategories;
     private int playerCount;
@@ -143,6 +148,8 @@ public class JeopardyGame
     private JButton resetGameButton;
     private JButton quitButton;
     private JButton settingsButton;
+    private JButton resetRoundButton;
+    private JButton highscoresButton;
 
     /**
      * Creates a new JeopardyGame with default characteristics.
@@ -245,12 +252,12 @@ public class JeopardyGame
      */
     public void displayErrorDialog(String errorMessage)
     {
-        int errorDialog = JOptionPane.showOptionDialog(jeopardyGameFrame, errorMessage, "Error",JOptionPane.YES_NO_OPTION,
+        int errorDialog = JOptionPane.showOptionDialog(frame, errorMessage, "Error",JOptionPane.YES_NO_OPTION,
                 JOptionPane.ERROR_MESSAGE, null, ERROR_DIALOG_MESSAGES, ERROR_DIALOG_MESSAGES[0]);
 
         if (errorDialog == JOptionPane.YES_OPTION)
         {
-            jeopardyGameFrame.dispose();
+            frame.dispose();
             new JeopardyGame();
         }
         else
@@ -342,22 +349,34 @@ public class JeopardyGame
     {
         controlPanel = new JPanel();
         controlPanel.setBackground(new Color(MAIN_WINDOW_BACKGROUND_COLOR[0], MAIN_WINDOW_BACKGROUND_COLOR[1], MAIN_WINDOW_BACKGROUND_COLOR[2]));
+        controlPanel.setBorder(new EmptyBorder(CONTROL_PANEL_MARGINS, CONTROL_PANEL_MARGINS, CONTROL_PANEL_MARGINS, CONTROL_PANEL_MARGINS));
+        controlPanel.setLayout(new FlowLayout(FlowLayout.CENTER, CONTROL_PANEL_MARGINS, 0));
         controlPanelListener = new ControlPanelListener();
 
-        resetGameButton = new JButton(RESET_BUTTON_TEXT);
+        highscoresButton = new JButton(HIGHSCORES_BUTTON_TEXT);
+        highscoresButton.setPreferredSize(new Dimension(CONTROL_PANEL_BUTTON_SIZE[0], CONTROL_PANEL_BUTTON_SIZE[1]));
+        highscoresButton.addActionListener(controlPanelListener);
+        controlPanel.add(highscoresButton);
+
+        resetGameButton = new JButton(RESET_GAME_BUTTON_TEXT);
         resetGameButton.setPreferredSize(new Dimension(CONTROL_PANEL_BUTTON_SIZE[0], CONTROL_PANEL_BUTTON_SIZE[1]));
         resetGameButton.addActionListener(controlPanelListener);
         controlPanel.add(resetGameButton);
 
-        quitButton = new JButton(QUIT_BUTTON_TEXT);
-        quitButton.setPreferredSize(new Dimension(CONTROL_PANEL_BUTTON_SIZE[0], CONTROL_PANEL_BUTTON_SIZE[1]));
-        quitButton.addActionListener(controlPanelListener);
-        controlPanel.add(quitButton);
+        resetRoundButton = new JButton(RESET_ROUND_BUTTON_TEXT);
+        resetRoundButton.setPreferredSize(new Dimension(CONTROL_PANEL_BUTTON_SIZE[0], CONTROL_PANEL_BUTTON_SIZE[1]));
+        resetRoundButton.addActionListener(controlPanelListener);
+        controlPanel.add(resetRoundButton);
 
         settingsButton = new JButton(SETTINGS_BUTTON_TEXT);
         settingsButton.setPreferredSize(new Dimension(CONTROL_PANEL_BUTTON_SIZE[0], CONTROL_PANEL_BUTTON_SIZE[1]));
         settingsButton.addActionListener(controlPanelListener);
         controlPanel.add(settingsButton);
+
+        quitButton = new JButton(QUIT_BUTTON_TEXT);
+        quitButton.setPreferredSize(new Dimension(CONTROL_PANEL_BUTTON_SIZE[0], CONTROL_PANEL_BUTTON_SIZE[1]));
+        quitButton.addActionListener(controlPanelListener);
+        controlPanel.add(quitButton);
 
     } // end of method createControlPanel()
 
@@ -366,24 +385,30 @@ public class JeopardyGame
      */
     private void makeFrame()
     {
-        jeopardyGameFrame = new JFrame(FRAME_TITLE);
-        jeopardyGameFrame.setPreferredSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
-        jeopardyGameFrame.getContentPane().setBackground(new Color(MAIN_WINDOW_BACKGROUND_COLOR[0], MAIN_WINDOW_BACKGROUND_COLOR[1], MAIN_WINDOW_BACKGROUND_COLOR[2]));
-        jeopardyGameFrame.setLayout(new BorderLayout());
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
+        frame = new JFrame(FRAME_TITLE);
+        frame.setPreferredSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
+        frame.getContentPane().setBackground(new Color(MAIN_WINDOW_BACKGROUND_COLOR[0], MAIN_WINDOW_BACKGROUND_COLOR[1], MAIN_WINDOW_BACKGROUND_COLOR[2]));
+        frame.setLayout(new BorderLayout());
+
+        int xLocation = Math.round((screenSize.width - FRAME_WIDTH)/2);
+        int yLocation = Math.round((screenSize.height - FRAME_HEIGHT)/2);
+        frame.setLocation(xLocation, yLocation);
 
         importFonts();
 
         createButtonPanel();
-        jeopardyGameFrame.add(answerPanel, BorderLayout.CENTER);
+        frame.add(answerPanel, BorderLayout.CENTER);
 
         createJeopardyBanner();
-        jeopardyGameFrame.add(jeopardyBanner, BorderLayout.PAGE_START);
+        frame.add(jeopardyBanner, BorderLayout.PAGE_START);
 
         createControlPanel();
-        jeopardyGameFrame.add(controlPanel, BorderLayout.PAGE_END);
+        frame.add(controlPanel, BorderLayout.PAGE_END);
 
-        jeopardyGameFrame.pack();
-        jeopardyGameFrame.setVisible(true);
+        frame.pack();
+        frame.setVisible(true);
     }
 
     /* private classes */
@@ -408,15 +433,14 @@ public class JeopardyGame
             } // end of if (source == quitButton)
             else if (source == settingsButton)
             {
-                jeopardyGameFrame.dispose();
+                frame.dispose();
                 new GameLauncher(allCategories);
             } // end of if (source == resetGameButton)
             else if (source == resetGameButton)
             {
-                jeopardyGameFrame.dispose();
+                frame.dispose();
                 new JeopardyGame(categoriesToUse, allCategories, playerCount, roundCount, answerCount, 1);
             } // end of if (source == resetGameButton)
-
         } // end of method actionPerformed(ActionEvent event)
     } // end of class ControlPanelListener implements ActionListener
 } // end of class JeopardyGame
