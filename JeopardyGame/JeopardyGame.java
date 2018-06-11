@@ -128,10 +128,13 @@ public class JeopardyGame
     private static final String GAME_SCORE_PANEL_HEADING = "Total Game Scores:";
     private static final int GAME_AND_ROUND_SCORE_PANEL_MARGINS = 8;
     private static final String SCORES_HEADING_FONT_SOURCE = "resources/fonts/SNES_italic.ttf";
-    private static final int SCORES_HEADING_FONT_SIZE = 32;
+    private static final String SCORES_FONT_SOURCE = "resources/fonts/emulogic.ttf";
+    private static final int SCORES_HEADING_FONT_SIZE = 40;
     private static final int[] SCORES_HEADING_FONT_COLOR = {0,255,255};
-    private static final int[] SCORES_FONT_COLOR = {150, 255, 255};
-    private static final int SCORES_FONT_SIZE = 24;
+    private static final int[] SCORES_FONT_COLOR = {200, 255, 255};
+    private static final int SCORES_FONT_SIZE = 12;
+    private static final String PLAYER_TURN_INDICATOR = "--> ";
+    private static final String NOT_PLAYER_TURN_INDICATOR = "    ";
 
     /* instance fields */
     private JFrame frame;
@@ -304,7 +307,7 @@ public class JeopardyGame
             jeopardyBannerFont = Font.createFont(Font.TRUETYPE_FONT, new FileInputStream(new File(JEOPARDY_FONT_SOURCE))).deriveFont(Font.PLAIN, JEOPARDY_FONT_SIZE);
             buttonFont = new Font(BUTTON_FONT_FAMILY, Font.PLAIN, 24);
             scoresHeadingFont = Font.createFont(Font.TRUETYPE_FONT, new FileInputStream(new File(SCORES_HEADING_FONT_SOURCE))).deriveFont(Font.PLAIN, SCORES_HEADING_FONT_SIZE);
-            scoresFont = Font.createFont(Font.TRUETYPE_FONT, new FileInputStream(new File(SCORES_HEADING_FONT_SOURCE))).deriveFont(Font.PLAIN, SCORES_FONT_SIZE);
+            scoresFont = Font.createFont(Font.TRUETYPE_FONT, new FileInputStream(new File(SCORES_FONT_SOURCE))).deriveFont(Font.PLAIN, SCORES_FONT_SIZE);
             categoryLabelFont = Font.createFont(Font.TRUETYPE_FONT, new FileInputStream(new File(CATEGORY_FONT_SOURCE))).deriveFont(Font.PLAIN, CATEGORY_FONT_SIZE);
         }
         catch (IOException exception)
@@ -413,7 +416,7 @@ public class JeopardyGame
     /*
      * Creates the player score panel.
      */
-    private void createScorePanel()
+    private void createSidePanel()
     {
       sidePanel = new JPanel();
       sidePanel.setBorder(new EmptyBorder(SCORE_PANEL_MARGINS, SCORE_PANEL_MARGINS, SCORE_PANEL_MARGINS, SCORE_PANEL_MARGINS));
@@ -450,24 +453,24 @@ public class JeopardyGame
         playerGameScores[playerIndex] = 0;
         playerRoundScores[playerIndex] = 0;
 
-        playerGameScoreLabels[playerIndex] = new JLabel("      Player " + (playerIndex + 1) + ": " + playerGameScores[playerIndex]);
+        playerGameScoreLabels[playerIndex] = new JLabel(NOT_PLAYER_TURN_INDICATOR + "Player " + (playerIndex + 1) + ": " + playerGameScores[playerIndex]);
         playerGameScoreLabels[playerIndex].setFont(scoresFont);
         playerGameScoreLabels[playerIndex].setForeground(new Color(SCORES_FONT_COLOR[0], SCORES_FONT_COLOR[1], SCORES_FONT_COLOR[2]));
         gameScorePanel.add(playerGameScoreLabels[playerIndex]);
 
-        playerRoundScoreLabels[playerIndex] = new JLabel("      Player " + (playerIndex + 1) + ": " + playerGameScores[playerIndex]);
+        playerRoundScoreLabels[playerIndex] = new JLabel(NOT_PLAYER_TURN_INDICATOR + "Player " + (playerIndex + 1) + ": " + playerGameScores[playerIndex]);
         playerRoundScoreLabels[playerIndex].setFont(scoresFont);
         playerRoundScoreLabels[playerIndex].setForeground(new Color(SCORES_FONT_COLOR[0], SCORES_FONT_COLOR[1], SCORES_FONT_COLOR[2]));
         roundScorePanel.add(playerRoundScoreLabels[playerIndex]);
 
       } // end of for (int playerIndex = 0; playerIndex < playerCount; playerIndex++)
 
-
+      playerRoundScoreLabels[0].setText(playerRoundScoreLabels[0].getText().replaceAll(NOT_PLAYER_TURN_INDICATOR, PLAYER_TURN_INDICATOR));
 
       sidePanel.add(gameScorePanel);
       sidePanel.add(roundScorePanel);
 
-    }
+    } // end of method createSidePanel()
 
     /*
      * Creates the frame for the jeopardy game.
@@ -496,7 +499,7 @@ public class JeopardyGame
         createControlPanel();
         frame.add(controlPanel, BorderLayout.PAGE_END);
 
-        createScorePanel();
+        createSidePanel();
         frame.add(sidePanel, BorderLayout.LINE_START);
 
         frame.pack();

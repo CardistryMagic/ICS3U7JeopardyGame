@@ -16,7 +16,7 @@ public class AnswerDialog
     public static final int QUESTION_HEIGHT = 40;
     public static final int GRID_LAYOUT_LENGTH = 1;
 
-    /* Instance fields */
+    /* instance fields */
     private Answer answer;
     JRadioButton[] arr;
     String[] arr1;

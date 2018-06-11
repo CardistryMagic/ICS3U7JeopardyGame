@@ -31,20 +31,20 @@ public class SplashScreen
     private static final String JEOPARDY_FONT_SOURCE = "resources/fonts/jeopardy.ttf";
     private static final String MAIN_DATA_FILE_SOURCE = "resources/data_files/categories.data";
     private static final String JEOPARDY_TEXT = "Jeopardy!";
-    private static int FRAME_WIDTH = 1000;
-    private static int FRAME_HEIGHT = 300;
-    private static int[] WINDOW_BACKGROUND_COLOR = {0, 85, 255};
-    private static int JEOPARDY_FONT_SIZE = 250;
+    private static final int FRAME_WIDTH = 1000;
+    private static final int FRAME_HEIGHT = 300;
+    private static final int[] WINDOW_BACKGROUND_COLOR = {0, 85, 255};
+    private static final int JEOPARDY_FONT_SIZE = 250;
     private static final String[] ERROR_DIALOG_MESSAGES = {"Try again", "Quit"};
-    private static int[] JEOPARDY_FONT_COLOR = {255, 255, 255};
+    private static final int[] JEOPARDY_FONT_COLOR = {255, 255, 255};
 
     /* instance fields */
-    ArrayList<Category> categories;
-    BufferedReader categoriesDataFile;
-    Font jeopardyFont;
-    JLabel jeopardyLogo;
-    JFrame loadingFrame;
-    JPanel jeopardyLogoPanel;
+    private ArrayList<Category> categories;
+    private BufferedReader categoriesDataFile;
+    private Font jeopardyFont;
+    private JLabel jeopardyLogo;
+    private JFrame loadingFrame;
+    private JPanel jeopardyLogoPanel;
 
     /* constructors */
 
@@ -54,8 +54,7 @@ public class SplashScreen
     public SplashScreen()
     {
         makeFrame();
-        intializeCategoryData();
-        showGameLauncher();
+        initializeGame();
     }
 
     /* accessors */
@@ -134,7 +133,7 @@ public class SplashScreen
     /*
      * Reads the data for the categories.
      */
-    private void intializeCategoryData()
+    private void initializeGame()
     {
         categories = new ArrayList<Category>();
         boolean fileFound = false;
@@ -180,10 +179,12 @@ public class SplashScreen
                     catch (FileNotFoundException exception)
                     {
                         displayErrorDialog("ERROR: Unable to establish connection to \"resources/data_files/" + currentLine + ".data\".");
+                        return;
                     } // end of catch (FileNotFoundException exception)
                     catch (IOException exception)
                     {
                         displayErrorDialog("ERROR: Unable to read data from \"resources/data_files/" + currentLine + ".data\".");
+                        return;
                     } // end of catch (IOException exception)
                 } // end of if (validLine)
             }
@@ -192,6 +193,7 @@ public class SplashScreen
             if (categories.size() < JeopardyGame.CATEGORY_COUNT)
             {
                 displayErrorDialog("ERROR: " + JeopardyGame.CATEGORY_COUNT + " categories expected, but only " + categories.size() + " categories were successfully detected in \"resources/data_files/categories.data\"");
+                return;
             }
             else
             {
@@ -223,6 +225,7 @@ public class SplashScreen
                     if (!sufficientNumberOfQuestions)
                     {
                         displayErrorDialog("ERROR: Some answers did not meet the minimum question count of " + JeopardyGame.QUESTION_COUNT);
+                        return;
                     } // end of if (!sufficientNumberOfAnswers)
                     else if (categories.size() > JeopardyGame.CATEGORY_COUNT)
                     {
@@ -241,9 +244,12 @@ public class SplashScreen
                 else
                 {
                     displayErrorDialog("ERROR: Some categories did not meet the requirement of having a minimum answer count of " + JeopardyGame.ANSWER_COUNT);
+                    return;
                 } // end of if (sufficientNumberOfAnswers)
             } // end of if (categories.size() < CATEGORY_COUNT)
         } // end of if (fileFound)
+        
+        showGameLauncher();
     } // end of method initializeCategoryData()
 
     /*
