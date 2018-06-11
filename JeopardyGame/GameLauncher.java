@@ -182,11 +182,11 @@ public class GameLauncher
 
         if (numberOfCategoriesToUse < JeopardyGame.MINIMUM_NUMBER_OF_CATEGORIES)
         {
-            createWarningDialog("ERROR: The minimum amount of " + JeopardyGame.MINIMUM_NUMBER_OF_CATEGORIES + " was not met. Please try again.");
+            createWarningDialog("ERROR: The minimum amount of categories (" + JeopardyGame.MINIMUM_NUMBER_OF_CATEGORIES + ")"  + " was not met. Please try again.");
         }
         else if (numberOfCategoriesToUse > JeopardyGame.MAXIMUM_NUMBER_OF_CATEGORIES)
         {
-            createWarningDialog("ERROR: The maximum amount of " + JeopardyGame.MAXIMUM_NUMBER_OF_CATEGORIES + " was exceeded. Please try again.");
+            createWarningDialog("ERROR: The maximum amount of categories (" + JeopardyGame.MINIMUM_NUMBER_OF_CATEGORIES + ")"  + " was not met. Please try again.");
         }
         else
         {
@@ -204,7 +204,7 @@ public class GameLauncher
             } // end of for (int categoryIndex = 0; categoryIndex < categoryCheckBoxButtons.length; categoryIndex++)
 
             gameLauncherFrame.dispose();
-            new JeopardyGame(categoriesToUseInGame, allCategories, numberOfPlayers, numberOfRounds, numberOfAnswers, 1);
+            new JeopardyGame(categoriesToUseInGame, allCategories, numberOfPlayers, numberOfRounds, numberOfAnswers);
         }
     } // end of method launchGame()
 

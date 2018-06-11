@@ -109,11 +109,11 @@ public class JeopardyGame
     private static final int CATEGORY_FONT_SIZE = 28;
     private static final String[] ERROR_DIALOG_MESSAGES = {"Try again", "Quit"};
     private static final String FRAME_TITLE = "Jeopardy";
-    private static final int FRAME_WIDTH = 1024;
-    private static final int FRAME_HEIGHT = 576;
+    private static final int FRAME_WIDTH = 1280;
+    private static final int FRAME_HEIGHT = 720;
     private static final int[] CATEGORY_BACKGROUND_COLOR = {255, 240, 40};
     private static final int[] ANSWER_BUTTON_BACKGROUND_COLOR = {0,50,200};
-    private static final int[] CATEGORY_TEXT_COLOR = {150, 150, 150};
+    private static final int[] CATEGORY_TEXT_COLOR = {200, 200, 200};
     private static final int[] ANSWER_BUTTON_TEXT_COLOR = {255,200,0};
     private static final int ANSWER_PANEL_MARGINS = 10;
     private static final String SETTINGS_BUTTON_TEXT = "Change Settings";
@@ -123,6 +123,15 @@ public class JeopardyGame
     private static final String RESET_ROUND_BUTTON_TEXT = "Reset Round";
     private static final String HIGHSCORES_BUTTON_TEXT = "Highscores";
     private static final int CONTROL_PANEL_MARGINS = 10;
+    private static final int SCORE_PANEL_MARGINS = 20;
+    private static final String ROUND_SCORE_PANEL_HEADING = "Total Round Scores:";
+    private static final String GAME_SCORE_PANEL_HEADING = "Total Game Scores:";
+    private static final int GAME_AND_ROUND_SCORE_PANEL_MARGINS = 8;
+    private static final String SCORES_HEADING_FONT_SOURCE = "resources/fonts/SNES_italic.ttf";
+    private static final int SCORES_HEADING_FONT_SIZE = 32;
+    private static final int[] SCORES_HEADING_FONT_COLOR = {0,255,255};
+    private static final int[] SCORES_FONT_COLOR = {150, 255, 255};
+    private static final int SCORES_FONT_SIZE = 24;
 
     /* instance fields */
     private JFrame frame;
@@ -150,6 +159,19 @@ public class JeopardyGame
     private JButton settingsButton;
     private JButton resetRoundButton;
     private JButton highscoresButton;
+    private int[] playerGameScores;
+    private int[] playerRoundScores;
+    private JLabel[] playerGameScoreLabels;
+    private JLabel[] playerRoundScoreLabels;
+    private int playerTurns;
+    private JPanel sidePanel;
+    private JPanel gameScorePanel;
+    private JPanel roundScorePanel;
+    private JLabel gameScoresHeading;
+    private JLabel roundScoresHeading;
+    private Font scoresHeadingFont;
+    private Font scoresFont;
+
 
     /**
      * Creates a new JeopardyGame with default characteristics.
@@ -172,9 +194,8 @@ public class JeopardyGame
      * @param numberOfPlayers the number of players in this game of jeopardy; must be higher than <code>JeopardyGame.MINIMUM_NUMBER_OF_PLAYERS</code> and lower than <code>JeopardyGame.MAXIMUM_NUMBER_OF_PLAYERS</code>
      * @param numberOfRounds the number of rounds in this game of jeopardy; must be higher than <code>JeopardyGame.MINIMUM_NUMBER_OF_ROUNDS</code> and lower than <code>JeopardyGame.MAXIMUM_NUMBER_OF_ROUNDS</code>
      * @param numberOfAnswers the number of answers per category in this game of jeopardy; must be higher than <code>JeopardyGame.MINIMUM_NUMBER_OF_ANSWERS and lower than <code>JeopardyGame.MAXIMUM_NUMBER_OF_ANSWERS</code>
-     * @param currentRoundNumber the current round number
      */
-    public JeopardyGame(Category[] chosenCategories, Category[] allCategories, int numberOfPlayers, int numberOfRounds, int numberOfAnswers, int currentRoundNumber)
+    public JeopardyGame(Category[] chosenCategories, Category[] allCategories, int numberOfPlayers, int numberOfRounds, int numberOfAnswers)
     {
         if (chosenCategories != null)
         {
@@ -221,14 +242,7 @@ public class JeopardyGame
             answerCount = MINIMUM_NUMBER_OF_ANSWERS;
         } // end of if (numberOfAnswers > MINIMUM_NUMBER_OF_ANSWERS && numberOfAnswers < MAXIMUM_NUMBER_OF_ANSWERS)
 
-        if (currentRoundNumber > 0 && currentRoundNumber <= roundCount)
-        {
-            this.currentRoundNumber = currentRoundNumber;
-        }
-        else
-        {
-            currentRoundNumber = 1;
-        } // end of if (currentRoundNumber > 0 && currentRoundNumber <= roundCount)
+        currentRoundNumber = 1;
 
         makeFrame();
     } // end of constructor JeopardyGame(Category[] chosenCategories, Category[] allCategories, int numberOfPlayers, int numberOfRounds, int numberOfAnswers, int currentRoundNumber)
@@ -246,6 +260,20 @@ public class JeopardyGame
     {
         System.exit(0);
     } // end of method quit()
+
+    /*
+     * Resets the current round.
+     */
+    public void resetRound()
+    {
+        for (int answerIndex = 0; answerIndex < answerCount; answerIndex++)
+        {
+            for (int categoryIndex = 0; categoryIndex < categoriesToUse.length; categoryIndex++)
+            {
+                answerButtons[categoryIndex][answerIndex].setEnabled(true);
+            } // end of for (int categoryIndex = 0; categoryIndex < CATEGORY_COUNT; categoryIndex++)
+        } // end of for (int answerIndex = 0; answerIndex < ANSWER_COUNT; answerIndex++)
+    } // end of method resetRound()
 
     /*
      * Displays an error message in a dialog box with the option to try again or quit the program.
@@ -275,6 +303,8 @@ public class JeopardyGame
         {
             jeopardyBannerFont = Font.createFont(Font.TRUETYPE_FONT, new FileInputStream(new File(JEOPARDY_FONT_SOURCE))).deriveFont(Font.PLAIN, JEOPARDY_FONT_SIZE);
             buttonFont = new Font(BUTTON_FONT_FAMILY, Font.PLAIN, 24);
+            scoresHeadingFont = Font.createFont(Font.TRUETYPE_FONT, new FileInputStream(new File(SCORES_HEADING_FONT_SOURCE))).deriveFont(Font.PLAIN, SCORES_HEADING_FONT_SIZE);
+            scoresFont = Font.createFont(Font.TRUETYPE_FONT, new FileInputStream(new File(SCORES_HEADING_FONT_SOURCE))).deriveFont(Font.PLAIN, SCORES_FONT_SIZE);
             categoryLabelFont = Font.createFont(Font.TRUETYPE_FONT, new FileInputStream(new File(CATEGORY_FONT_SOURCE))).deriveFont(Font.PLAIN, CATEGORY_FONT_SIZE);
         }
         catch (IOException exception)
@@ -378,7 +408,66 @@ public class JeopardyGame
         quitButton.addActionListener(controlPanelListener);
         controlPanel.add(quitButton);
 
-    } // end of method createControlPanel()
+    } // end of method createControlPanel()(
+
+    /*
+     * Creates the player score panel.
+     */
+    private void createScorePanel()
+    {
+      sidePanel = new JPanel();
+      sidePanel.setBorder(new EmptyBorder(SCORE_PANEL_MARGINS, SCORE_PANEL_MARGINS, SCORE_PANEL_MARGINS, SCORE_PANEL_MARGINS));
+      sidePanel.setLayout(new GridLayout(0, 1, 0, SCORE_PANEL_MARGINS));
+      sidePanel.setBackground(new Color(MAIN_WINDOW_BACKGROUND_COLOR[0], MAIN_WINDOW_BACKGROUND_COLOR[1], MAIN_WINDOW_BACKGROUND_COLOR[2]));
+
+      gameScorePanel = new JPanel();
+      gameScorePanel.setLayout(new GridLayout(0, 1, 0, GAME_AND_ROUND_SCORE_PANEL_MARGINS));
+      gameScorePanel.setBackground(new Color(MAIN_WINDOW_BACKGROUND_COLOR[0], MAIN_WINDOW_BACKGROUND_COLOR[1], MAIN_WINDOW_BACKGROUND_COLOR[2]));
+
+      roundScorePanel = new JPanel();
+      roundScorePanel.setLayout(new GridLayout(0, 1, 0, GAME_AND_ROUND_SCORE_PANEL_MARGINS));
+      roundScorePanel.setBackground(new Color(MAIN_WINDOW_BACKGROUND_COLOR[0], MAIN_WINDOW_BACKGROUND_COLOR[1], MAIN_WINDOW_BACKGROUND_COLOR[2]));
+
+      gameScoresHeading = new JLabel(GAME_SCORE_PANEL_HEADING);
+      gameScoresHeading.setHorizontalAlignment(JLabel.LEFT);
+      gameScoresHeading.setFont(scoresHeadingFont);
+      gameScoresHeading.setForeground(new Color(SCORES_HEADING_FONT_COLOR[0], SCORES_HEADING_FONT_COLOR[1], SCORES_HEADING_FONT_COLOR[2]));
+      gameScorePanel.add(gameScoresHeading);
+
+      roundScoresHeading = new JLabel(ROUND_SCORE_PANEL_HEADING);
+      roundScoresHeading.setHorizontalAlignment(JLabel.LEFT);
+      roundScoresHeading.setFont(scoresHeadingFont);
+      roundScoresHeading.setForeground(new Color(SCORES_HEADING_FONT_COLOR[0], SCORES_HEADING_FONT_COLOR[1], SCORES_HEADING_FONT_COLOR[2]));
+      roundScorePanel.add(roundScoresHeading);
+
+      playerGameScores = new int[playerCount];
+      playerRoundScores = new int[playerCount];
+      playerRoundScoreLabels = new JLabel[playerCount];
+      playerGameScoreLabels = new JLabel[playerCount];
+
+      for (int playerIndex = 0; playerIndex < playerCount; playerIndex++)
+      {
+        playerGameScores[playerIndex] = 0;
+        playerRoundScores[playerIndex] = 0;
+
+        playerGameScoreLabels[playerIndex] = new JLabel("      Player " + (playerIndex + 1) + ": " + playerGameScores[playerIndex]);
+        playerGameScoreLabels[playerIndex].setFont(scoresFont);
+        playerGameScoreLabels[playerIndex].setForeground(new Color(SCORES_FONT_COLOR[0], SCORES_FONT_COLOR[1], SCORES_FONT_COLOR[2]));
+        gameScorePanel.add(playerGameScoreLabels[playerIndex]);
+
+        playerRoundScoreLabels[playerIndex] = new JLabel("      Player " + (playerIndex + 1) + ": " + playerGameScores[playerIndex]);
+        playerRoundScoreLabels[playerIndex].setFont(scoresFont);
+        playerRoundScoreLabels[playerIndex].setForeground(new Color(SCORES_FONT_COLOR[0], SCORES_FONT_COLOR[1], SCORES_FONT_COLOR[2]));
+        roundScorePanel.add(playerRoundScoreLabels[playerIndex]);
+
+      } // end of for (int playerIndex = 0; playerIndex < playerCount; playerIndex++)
+
+
+
+      sidePanel.add(gameScorePanel);
+      sidePanel.add(roundScorePanel);
+
+    }
 
     /*
      * Creates the frame for the jeopardy game.
@@ -406,6 +495,9 @@ public class JeopardyGame
 
         createControlPanel();
         frame.add(controlPanel, BorderLayout.PAGE_END);
+
+        createScorePanel();
+        frame.add(sidePanel, BorderLayout.LINE_START);
 
         frame.pack();
         frame.setVisible(true);
@@ -439,8 +531,12 @@ public class JeopardyGame
             else if (source == resetGameButton)
             {
                 frame.dispose();
-                new JeopardyGame(categoriesToUse, allCategories, playerCount, roundCount, answerCount, 1);
+                new JeopardyGame(categoriesToUse, allCategories, playerCount, roundCount, answerCount);
             } // end of if (source == resetGameButton)
+            else if (source == resetRoundButton)
+            {
+                resetRound();
+            }
         } // end of method actionPerformed(ActionEvent event)
     } // end of class ControlPanelListener implements ActionListener
 } // end of class JeopardyGame
