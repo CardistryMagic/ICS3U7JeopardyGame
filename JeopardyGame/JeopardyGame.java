@@ -114,6 +114,10 @@ public class JeopardyGame
     private static final int[] CATEGORY_TEXT_COLOR = {150, 150, 150};
     private static final int[] ANSWER_BUTTON_TEXT_COLOR = {255,200,0};
     private static final int ANSWER_PANEL_MARGINS = 10;
+    private static final String SETTINGS_BUTTON_TEXT = "Settings";
+    private static final String RESET_BUTTON_TEXT = "Reset";
+    private static final String QUIT_BUTTON_TEXT = "Quit";
+    private static final int[] CONTROL_PANEL_BUTTON_SIZE = {200, 40};
 
     /* instance fields */
     private JFrame jeopardyGameFrame;
@@ -133,7 +137,12 @@ public class JeopardyGame
     private JButton[][] answerButtons;
     private JLabel[] categoryLabels;
     private Color categoryBackgroundColor;
-
+    private JLabel jeopardyBanner;
+    private JPanel controlPanel;
+    private ControlPanelListener controlPanelListener;
+    private JButton resetGameButton;
+    private JButton quitButton;
+    private JButton settingsButton;
 
     /**
      * Creates a new JeopardyGame with default characteristics.
@@ -319,6 +328,40 @@ public class JeopardyGame
     } // end of method createButtonPanel()
 
     /*
+     * Creates the Jeopardy banner.
+     */
+    private void createJeopardyBanner()
+    {
+        jeopardyBanner = new JLabel(JEOPARDY_BANNER_TEXT);
+        jeopardyBanner.setHorizontalAlignment(JLabel.CENTER);
+        jeopardyBanner.setFont(jeopardyBannerFont);
+        jeopardyBanner.setForeground(new Color(JEOPARDY_FONT_COLOR[0], JEOPARDY_FONT_COLOR[1], JEOPARDY_FONT_COLOR[2]));
+    } // end of method createJeopardyBanner()
+
+    private void createControlPanel()
+    {
+        controlPanel = new JPanel();
+        controlPanel.setBackground(new Color(MAIN_WINDOW_BACKGROUND_COLOR[0], MAIN_WINDOW_BACKGROUND_COLOR[1], MAIN_WINDOW_BACKGROUND_COLOR[2]));
+        controlPanelListener = new ControlPanelListener();
+
+        resetGameButton = new JButton(RESET_BUTTON_TEXT);
+        resetGameButton.setPreferredSize(new Dimension(CONTROL_PANEL_BUTTON_SIZE[0], CONTROL_PANEL_BUTTON_SIZE[1]));
+        resetGameButton.addActionListener(controlPanelListener);
+        controlPanel.add(resetGameButton);
+
+        quitButton = new JButton(QUIT_BUTTON_TEXT);
+        quitButton.setPreferredSize(new Dimension(CONTROL_PANEL_BUTTON_SIZE[0], CONTROL_PANEL_BUTTON_SIZE[1]));
+        quitButton.addActionListener(controlPanelListener);
+        controlPanel.add(quitButton);
+
+        settingsButton = new JButton(SETTINGS_BUTTON_TEXT);
+        settingsButton.setPreferredSize(new Dimension(CONTROL_PANEL_BUTTON_SIZE[0], CONTROL_PANEL_BUTTON_SIZE[1]));
+        settingsButton.addActionListener(controlPanelListener);
+        controlPanel.add(settingsButton);
+
+    } // end of method createControlPanel()
+
+    /*
      * Creates the frame for the jeopardy game.
      */
     private void makeFrame()
@@ -333,16 +376,47 @@ public class JeopardyGame
         createButtonPanel();
         jeopardyGameFrame.add(answerPanel, BorderLayout.CENTER);
 
-        // createJeopardyBanner();
-        // jeopardyGameFrame.add(jeopardyBanner, BorderLayout.PAGE_START);
+        createJeopardyBanner();
+        jeopardyGameFrame.add(jeopardyBanner, BorderLayout.PAGE_START);
 
-        // createControlPanel();
-        // jeopardyGameFrame.add(controlPanel, BorderLayout.PAGE_END);
+        createControlPanel();
+        jeopardyGameFrame.add(controlPanel, BorderLayout.PAGE_END);
 
         jeopardyGameFrame.pack();
         jeopardyGameFrame.setVisible(true);
     }
 
     /* private classes */
-    
+
+    /*
+     * Listens to events from the control panel.
+     */
+    private class ControlPanelListener implements ActionListener
+    {
+        /**
+         * Responds to control panel button events.
+         *
+         * @param event the event performed
+         */
+        public void actionPerformed(ActionEvent event)
+        {
+            Object source = event.getSource();
+
+            if (source == quitButton)
+            {
+                quit();
+            } // end of if (source == quitButton)
+            else if (source == settingsButton)
+            {
+                jeopardyGameFrame.dispose();
+                new GameLauncher(allCategories);
+            } // end of if (source == resetGameButton)
+            else if (source == resetGameButton)
+            {
+                jeopardyGameFrame.dispose();
+                new JeopardyGame(categoriesToUse, allCategories, playerCount, roundCount, answerCount, 1);
+            } // end of if (source == resetGameButton)
+
+        } // end of method actionPerformed(ActionEvent event)
+    } // end of class ControlPanelListener implements ActionListener
 } // end of class JeopardyGame
