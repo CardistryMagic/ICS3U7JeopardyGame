@@ -178,6 +178,7 @@ public class JeopardyGame
     private JLabel roundNumberHeading;
     private JLabel currentRoundNumberLabel;
     private JPanel roundNumberPanel;
+    private AnswerPanelButtonListener answerPanelButtonListener;
 
     /**
      * Creates a new JeopardyGame with default characteristics.
@@ -351,6 +352,8 @@ public class JeopardyGame
         categoryTextColor = new Color(CATEGORY_TEXT_COLOR[0], CATEGORY_TEXT_COLOR[1], CATEGORY_TEXT_COLOR[2]);
         buttonFontColor = new Color(ANSWER_BUTTON_TEXT_COLOR[0], ANSWER_BUTTON_TEXT_COLOR[1], ANSWER_BUTTON_TEXT_COLOR[2]);
 
+        answerPanelButtonListener = new AnswerPanelButtonListener();
+
         answerPanel = new JPanel();
         answerPanel.setLayout(new GridLayout(answerCount + 1, categoriesToUse.length, ANSWER_PANEL_MARGINS, ANSWER_PANEL_MARGINS));
         answerButtons = new JButton[CATEGORY_COUNT][ANSWER_COUNT];
@@ -374,6 +377,7 @@ public class JeopardyGame
             {
                 String currentButtonText = "$" + ((answerIndex + 1)*ANSWER_SCORE_INCREMENT);
                 answerButtons[categoryIndex][answerIndex] = new JButton(currentButtonText);
+                answerButtons[categoryIndex][answerIndex].addActionListener(answerPanelButtonListener);
                 answerButtons[categoryIndex][answerIndex].setBackground(answerButtonColor);
                 answerButtons[categoryIndex][answerIndex].setForeground(buttonFontColor);
                 answerButtons[categoryIndex][answerIndex].setOpaque(true);
@@ -537,6 +541,34 @@ public class JeopardyGame
     }
 
     /* private classes */
+
+    /*
+     * Listens to events from the answer button panel.
+     */
+    public class AnswerPanelButtonListener implements ActionListener
+    {
+      /**
+       * Listens to events from the answer button panel.
+       *
+       * @param event the event performed
+       */
+      public void actionPerformed(ActionEvent event)
+      {
+        Object source = event.getSource();
+        for (int answerIndex = 0; answerIndex < answerCount; answerIndex++)
+        {
+            for (int categoryIndex = 0; categoryIndex < categoriesToUse.length; categoryIndex++)
+            {
+                if (source == answerButtons[categoryIndex][answerIndex])
+                {
+                  answerButtons[categoryIndex][answerIndex].setEnabled(false);
+                  new AnswerDialog(categoriesToUse[categoryIndex].getAnswer((answerIndex + 1) * ANSWER_SCORE_INCREMENT));
+                  frame.setEnabled(false);
+                }
+            } // end of for (int categoryIndex = 0; categoryIndex < CATEGORY_COUNT; categoryIndex++)
+        } // end of for (int answerIndex = 0; answerIndex < ANSWER_COUNT; answerIndex++)
+      } // end of method actionPerformed(ActionEvent event)
+    } // end of class AnswerPanelButtonListener
 
     /*
      * Listens to events from the control panel.

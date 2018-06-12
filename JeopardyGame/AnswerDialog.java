@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.event.*;
 import java.awt.*;
+import javax.swing.border.EmptyBorder;
 
 /**
  * A window to display the answer and prompt for the selection of the correct question.
@@ -22,8 +23,11 @@ public class AnswerDialog
     private static final String FONT_FAMILY = "Century Gothic";
     private static final int ANSWER_FONT_SIZE = 24;
     private static final int QUESTION_FONT_SIZE = 16;
-    private static final int ANSWER_PIXEL_WIDTH_PER_CHARACTER = 14;
-    private static final int QUESTION_PIXEL_WIDTH_PER_CHARACTER = 10;
+    private static final int ANSWER_PIXEL_WIDTH_PER_CHARACTER = 16;
+    private static final int QUESTION_PIXEL_WIDTH_PER_CHARACTER = 11;
+    private static final String CORRECT_TEXT = "CORRECT";
+    private static final String INCORRECT_TEXT = "INCORRECT";
+    private static final int FONT_SIZE_CORRECTION_FACTOR = 3;
 
     /* instance fields */
     private Answer answer;
@@ -42,6 +46,10 @@ public class AnswerDialog
     private Font answerFont;
     private JLabel answerLabel;
     private JPanel answerLabelPanel;
+    private boolean correctQuestionSelected;
+    private boolean displayResult;
+    private Font resultFont;
+    private JPanel fillingRectangle;
 
     /* constructors */
 
@@ -54,6 +62,8 @@ public class AnswerDialog
         allQuestions = answer.getPossibleQuestions();
         finished = false;
         frameTitle = "Playing for $" + Integer.toString(answer.getPointReward());
+        correctQuestionSelected = false;
+        displayResult = false;
 
         makeFrame();
     }
@@ -71,6 +81,8 @@ public class AnswerDialog
 
         allQuestions = answer.getPossibleQuestions();
         finished = false;
+        correctQuestionSelected = false;
+        displayResult = false;
 
         makeFrame();
     } // end of constructor AnswerDialog()
@@ -96,6 +108,16 @@ public class AnswerDialog
     {
         return finished;
     } // end of method isFinished()
+
+    /**
+     * Returns whether or not the user chose the correct question.
+     *
+     * @return whather the user chose the correct question; <code>true</code> if the user chose the correct question, otherwise <code>false</code>
+     */
+    public boolean correctQuestionPicked()
+    {
+        return correctQuestionSelected;
+    } // end of method correctQuestionPicked()
 
     /* mutators */
 
@@ -126,7 +148,7 @@ public class AnswerDialog
             String[] lineSeparatedBySpaces = line.split(" ");
             String lineWithLineBreaks = lineSeparatedBySpaces[0];
             int currentLength = 0;
-            
+
             for (int index = 1; index < lineSeparatedBySpaces.length; index++)
             {
                 if (currentLength + lineSeparatedBySpaces[index].length() < maxNumberOfCharacters)
@@ -140,11 +162,9 @@ public class AnswerDialog
                     currentLength = lineSeparatedBySpaces[index].length();
                 } // end of if (currentLength + lineSeparatedBySpaces[index].length() < maxNumberOfCharacters)
             } // end of for (int index = 0; index < lineSeparatedBySpace.size(); index++)
-            
+
             lineWithLineBreaks = "<html>" + lineWithLineBreaks + "</html>";
-            
-            System.out.println(lineWithLineBreaks);
-            
+
             return lineWithLineBreaks;
         }
         else
@@ -152,110 +172,158 @@ public class AnswerDialog
             return "";
         } // end of if (line != null)
 
-        } // end of method addLineBreaks()
-        /*
-         * Imports the necessary fonts for later use.
-         */
-        private void importFonts()
+    } // end of method addLineBreaks()
+    /*
+     * Imports the necessary fonts for later use.
+     */
+    private void importFonts()
+    {
+        answerFont = new Font(FONT_FAMILY, Font.PLAIN, ANSWER_FONT_SIZE);
+        questionFont = new Font(FONT_FAMILY, Font.PLAIN, QUESTION_FONT_SIZE);
+        resultFont = new Font(FONT_FAMILY, Font.PLAIN, Math.round(frameHeight/FONT_SIZE_CORRECTION_FACTOR));
+    }
+
+    /*
+     * Creates the question panel for this answer dialog.
+     */
+    private void createQuestionPanel()
+    {
+        questionPanel = new JPanel();
+        questionPanel.setBorder(new EmptyBorder(MARGINS, MARGINS, MARGINS, MARGINS));
+        questionPanel.setLayout(new GridLayout(0, GRID_LAYOUT_COLUMNS, MARGINS, MARGINS));
+        questionPanel.setBackground(Color.BLACK);
+
+        questionButtonGroup = new ButtonGroup();
+        questionSelectionButtons = new JRadioButton[allQuestions.length];
+
+        for (int index = 0; index < allQuestions.length; index++)
         {
-            answerFont = new Font(FONT_FAMILY, Font.PLAIN, ANSWER_FONT_SIZE);
-            questionFont = new Font(FONT_FAMILY, Font.PLAIN, QUESTION_FONT_SIZE);
+            questionSelectionButtons[index] = new JRadioButton(addLineBreaks(allQuestions[index], FRAME_WIDTH, QUESTION_PIXEL_WIDTH_PER_CHARACTER));
+            questionSelectionButtons[index].setFont(questionFont);
+            questionSelectionButtons[index].setBackground(Color.BLACK);
+            questionSelectionButtons[index].setForeground(Color.WHITE);
+            questionButtonGroup.add(questionSelectionButtons[index]);
+            questionPanel.add(questionSelectionButtons[index]);
+        } // end of for (int index = 0; index < allQuestions.length; index++)
+    } // end of method createQuestionPanel()
+
+    /*
+     * Creates the submit button panel.
+     */
+    private void createSubmitButtonPanel()
+    {
+        submitPanel = new JPanel();
+        submitPanel.setLayout(new FlowLayout(FlowLayout.CENTER, MARGINS, MARGINS));
+        submitPanel.setBackground(Color.BLACK);
+
+        submitButton = new JButton(SUBMIT_BUTTON_TEXT);
+        submitButton.setPreferredSize(new Dimension(SUBMIT_BUTTON_WIDTH, SUBMIT_BUTTON_HEIGHT));
+        submitButton.setBackground(Color.RED);
+        submitButton.setForeground(Color.YELLOW);
+        submitButton.addActionListener(new SubmitButtonListener());
+        submitButton.setFont(answerFont);
+        submitPanel.add(submitButton);
+    } // end of method createSubmitButtonPanel
+
+    /*
+     * Creates the frame for this answer dialog.
+     */
+    private void makeFrame()
+    {
+        frame = new JFrame(frameTitle);
+        frame.setLayout(new BorderLayout());
+        frameWidth = FRAME_WIDTH;
+        frameHeight = (FRAME_HEIGHT_PER_QUESTION*allQuestions.length + (2*(answer.getText().length()*Math.round(ANSWER_PIXEL_WIDTH_PER_CHARACTER/FRAME_WIDTH)))) + SUBMIT_BUTTON_HEIGHT;
+        frame.setPreferredSize(new Dimension(frameWidth, frameHeight));
+        frame.setBackground(Color.BLACK);
+        frame.setUndecorated(true);
+        frame.getRootPane().setBorder(BorderFactory.createMatteBorder(MARGINS, MARGINS, MARGINS, MARGINS, Color.BLUE));
+
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int xLocation = Math.round((screenSize.width - frameWidth)/2);
+        int yLocation = Math.round((screenSize.height - frameHeight)/2);
+        frame.setLocation(xLocation, yLocation);
+
+        importFonts();
+
+        createQuestionPanel();
+        frame.add(questionPanel, BorderLayout.CENTER);
+
+        createSubmitButtonPanel();
+        frame.add(submitPanel, BorderLayout.PAGE_END);
+
+        answerLabelPanel = new JPanel();
+        answerLabelPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        answerLabelPanel.setBackground(Color.BLACK);
+        answerLabelPanel.setBorder(new EmptyBorder(MARGINS, MARGINS, MARGINS, MARGINS));
+        answerLabel = new JLabel(addLineBreaks(answer.getText(), FRAME_WIDTH, ANSWER_PIXEL_WIDTH_PER_CHARACTER));
+        answerLabel.setFont(answerFont);
+        answerLabel.setBackground(Color.BLACK);
+        answerLabel.setForeground(Color.WHITE);
+        answerLabelPanel.add(answerLabel);
+        frame.add(answerLabelPanel, BorderLayout.PAGE_START);
+
+        frame.pack();
+        frame.setVisible(true);
+    } // end of makeFrame()
+
+    /*
+     * Changes the components of the frame to show the result.
+     *
+     * @param correctQuestionChosen whether the correct question was selected by the user; <code>true</code> if the correct question was chosen, otherwise <code>false</code>
+     */
+    public void showResult(boolean correctQuestionChosen)
+    {
+        displayResult = true;
+        if (correctQuestionChosen)
+        {
+            answerLabel.setText(CORRECT_TEXT);
         }
-
-        /*
-         * Creates the question panel for this answer dialog.
-         */
-        private void createQuestionPanel()
+        else
         {
-            questionPanel = new JPanel();
-            questionPanel.setLayout(new GridLayout(0, GRID_LAYOUT_COLUMNS, MARGINS, MARGINS));
-            questionPanel.setBackground(Color.BLACK);
+            answerLabel.setText(INCORRECT_TEXT);
+        } // end of if (correctQuestionChosen)
 
-            questionButtonGroup = new ButtonGroup();
-            questionSelectionButtons = new JRadioButton[allQuestions.length];
+        answerLabel.setFont(resultFont);
+        answerLabelPanel.setLayout(new FlowLayout(FlowLayout.CENTER, MARGINS, MARGINS));
+        BorderLayout layout = (BorderLayout) (frame.getContentPane()).getLayout();
+        frame.remove(layout.getLayoutComponent(BorderLayout.CENTER));
+        
+        fillingRectangle = new JPanel();
+        fillingRectangle.setBackground(Color.BLACK);
+        frame.add(fillingRectangle, BorderLayout.CENTER);
+        
+        frame.pack();
+        frame.repaint();
+    }
 
-            for (int index = 0; index < allQuestions.length; index++)
+    /* private classes */
+
+    /*
+     * Responds to events from the selection panel.
+     */
+    private class SubmitButtonListener implements ActionListener
+    {
+        /**
+         * Responds to an action event that takes place.
+         *
+         * @param event the event that takes place
+         */
+        public void actionPerformed(ActionEvent event)
+        {
+            Object source = event.getSource();
+
+            // checks which radio button was clicked and whether it was the right answer
+            // if right, the points will be added to the player's total
+            // if wrong, the points rewarded for the qustion will be removed from the player's total
+            if (source == submitButton)
             {
-                questionSelectionButtons[index] = new JRadioButton(addLineBreaks(allQuestions[index], FRAME_WIDTH, QUESTION_PIXEL_WIDTH_PER_CHARACTER));
-                questionSelectionButtons[index].setFont(questionFont);
-                questionSelectionButtons[index].setBackground(Color.BLACK);
-                questionSelectionButtons[index].setForeground(Color.WHITE);
-                questionButtonGroup.add(questionSelectionButtons[index]);
-                questionPanel.add(questionSelectionButtons[index]);
-            } // end of for (int index = 0; index < allQuestions.length; index++)
-        } // end of method createQuestionPanel()
-
-        /*
-         * Creates the submit button panel.
-         */
-        private void createSubmitButtonPanel()
-        {
-            submitPanel = new JPanel();
-            submitPanel.setLayout(new FlowLayout(FlowLayout.CENTER, MARGINS, MARGINS));
-            submitPanel.setBackground(Color.BLACK);
-
-            submitButton = new JButton(SUBMIT_BUTTON_TEXT);
-            submitButton.setPreferredSize(new Dimension(SUBMIT_BUTTON_WIDTH, SUBMIT_BUTTON_HEIGHT));
-            submitButton.setBackground(Color.RED);
-            submitButton.setForeground(Color.YELLOW);
-            submitButton.addActionListener(new SubmitButtonListener());
-            submitButton.setFont(answerFont);
-            submitPanel.add(submitButton);
-        } // end of method createSubmitButtonPanel
-
-        /*
-         * Creates the frame for this answer dialog.
-         */
-        private void makeFrame()
-        {
-            frame = new JFrame(frameTitle);
-            frameWidth = FRAME_WIDTH;
-            frameHeight = (FRAME_HEIGHT_PER_QUESTION*allQuestions.length + (2*(answer.getText().length()*Math.round(ANSWER_PIXEL_WIDTH_PER_CHARACTER/FRAME_WIDTH)))) + SUBMIT_BUTTON_HEIGHT;
-            frame.setPreferredSize(new Dimension(frameWidth, frameHeight));
-            frame.setBackground(Color.BLACK);
-
-            importFonts();
-
-            createQuestionPanel();
-            frame.add(questionPanel, BorderLayout.CENTER);
-
-            createSubmitButtonPanel();
-            frame.add(submitPanel, BorderLayout.PAGE_END);
-
-            answerLabelPanel = new JPanel();
-            answerLabelPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
-            answerLabelPanel.setBackground(Color.BLACK);
-            answerLabel = new JLabel(addLineBreaks(answer.getText(), FRAME_WIDTH, ANSWER_PIXEL_WIDTH_PER_CHARACTER));
-            answerLabel.setFont(answerFont);
-            answerLabel.setBackground(Color.BLACK);
-            answerLabel.setForeground(Color.WHITE);
-            answerLabelPanel.add(answerLabel);
-            frame.add(answerLabelPanel, BorderLayout.PAGE_START);
-
-            frame.pack();
-            frame.setVisible(true);
-        } // end of makeFrame()
-
-        /* private classes */
-
-        /*
-         * Responds to events from the selection panel.
-         */
-        private class SubmitButtonListener implements ActionListener
-        {
-            /**
-             * Responds to an action event that takes place.
-             *
-             * @param event the event that takes place
-             */
-            public void actionPerformed(ActionEvent event)
-            {
-                Object source = event.getSource();
-
-                // checks which radio button was clicked and whether it was the right answer
-                // if right, the points will be added to the player's total
-                // if wrong, the points rewarded for the qustion will be removed from the player's total
-                if (source == submitButton)
+                if (displayResult)
+                {
+                    frame.setVisible(false);
+                    finished = false;
+                }
+                else
                 {
                     boolean correctQuestionChosen = false;
                     for (int index = 0; index < QUESTION_COUNT; index++)
@@ -264,18 +332,22 @@ public class AnswerDialog
                         {
                             correctQuestionChosen = true;
                             //JeopardyGame.updateScore(answer.getPointReward());
-                        }
-                        else
-                        {
-                            //JeopardyGame.updateScore(-answer.getPointReward());
-                        } // end of if (arr[counter].isSelected())
+                        } // end of if (questionSelectionButtons[index].isSelected() && allQuestions[index].equals(answer.getCorrectQuestion()))
                     } // end of for (int counter = 0; counter < QUESTION_COUNT; counter++)
-                } // end of (source == submitButton)
-            } // end of method actionPerformed(ActionEvent event)
-        } // end of class SelectionPanelListener implements ActionListener
-    } // end of class AnswerDialog
 
-    // Category basics = new Category("basics");
-    // basics.importData();
-    // Answer ans = basics.getAnswer(20);
-    // AnswerDialog dia = new AnswerDialog(ans);
+                    if (correctQuestionChosen)
+                    {
+                        correctQuestionSelected = true;
+                    } // end of if (correctQuestionChosen)
+
+                    showResult(correctQuestionSelected);
+                } // end of if (displayResult)
+            } // end of (source == submitButton)
+        } // end of method actionPerformed(ActionEvent event)
+    } // end of class SelectionPanelListener implements ActionListener
+} // end of class AnswerDialog
+
+// Category basics = new Category("basics");
+// basics.importData();
+// Answer ans = basics.getAnswer(20);
+// AnswerDialog dia = new AnswerDialog(ans);
