@@ -135,6 +135,7 @@ public class JeopardyGame
     private static final int SCORES_FONT_SIZE = 12;
     private static final String PLAYER_TURN_INDICATOR = "--> ";
     private static final String NOT_PLAYER_TURN_INDICATOR = "    ";
+    private static final String ROUND_NUMBER_PANEL_HEADING = "Round ";
 
     /* instance fields */
     private JFrame frame;
@@ -174,7 +175,9 @@ public class JeopardyGame
     private JLabel roundScoresHeading;
     private Font scoresHeadingFont;
     private Font scoresFont;
-
+    private JLabel roundNumberHeading;
+    private JLabel currentRoundNumberLabel;
+    private JPanel roundNumberPanel;
 
     /**
      * Creates a new JeopardyGame with default characteristics.
@@ -253,6 +256,23 @@ public class JeopardyGame
     /* accessors */
 
     /* mutators */
+
+    /**
+     * Updates the score for the current player with the specified point value.
+     *
+     * @param pointValue the point value to update the current players score with; must be negative if the incorrect question is chosen, and positive if the correct question is chosen
+     */
+    public void updateScore(int pointValue)
+    {
+      playerRoundScores[playerTurns] = playerRoundScores[playerTurns] + pointValue;
+      playerGameScores[playerTurns] = playerGameScores[playerTurns] + pointValue;
+
+      playerGameScoreLabels[playerTurns].setText(NOT_PLAYER_TURN_INDICATOR + "Player " + (playerTurns + 1) + ": " + playerGameScores[playerTurns]);
+      playerRoundScoreLabels[playerTurns].setText(NOT_PLAYER_TURN_INDICATOR + "Player " + (playerTurns + 1) + ": " + playerRoundScores[playerTurns]);
+
+      playerTurns = (playerTurns + 1) % playerCount;
+      playerRoundScoreLabels[playerTurns].setText(playerRoundScoreLabels[playerTurns].getText().replaceAll(NOT_PLAYER_TURN_INDICATOR, PLAYER_TURN_INDICATOR));
+    } // end of method updateScore(int pointValue)
 
     /* private methods */
 
@@ -411,6 +431,16 @@ public class JeopardyGame
         quitButton.addActionListener(controlPanelListener);
         controlPanel.add(quitButton);
 
+        roundNumberPanel = new JPanel();
+        roundNumberPanel.setLayout(new GridLayout(0, 1, 0, GAME_AND_ROUND_SCORE_PANEL_MARGINS));
+        roundNumberPanel.setBackground(new Color(MAIN_WINDOW_BACKGROUND_COLOR[0], MAIN_WINDOW_BACKGROUND_COLOR[1], MAIN_WINDOW_BACKGROUND_COLOR[2]));
+
+        roundNumberHeading = new JLabel(ROUND_NUMBER_PANEL_HEADING + currentRoundNumber + " ");
+        roundNumberHeading.setHorizontalAlignment(JLabel.LEFT);
+        roundNumberHeading.setFont(scoresHeadingFont);
+        roundNumberHeading.setForeground(new Color(SCORES_HEADING_FONT_COLOR[0], SCORES_HEADING_FONT_COLOR[1], SCORES_HEADING_FONT_COLOR[2]));
+        controlPanel.add(roundNumberHeading);
+
     } // end of method createControlPanel()(
 
     /*
@@ -418,57 +448,57 @@ public class JeopardyGame
      */
     private void createSidePanel()
     {
-      sidePanel = new JPanel();
-      sidePanel.setBorder(new EmptyBorder(SCORE_PANEL_MARGINS, SCORE_PANEL_MARGINS, SCORE_PANEL_MARGINS, SCORE_PANEL_MARGINS));
-      sidePanel.setLayout(new GridLayout(0, 1, 0, SCORE_PANEL_MARGINS));
-      sidePanel.setBackground(new Color(MAIN_WINDOW_BACKGROUND_COLOR[0], MAIN_WINDOW_BACKGROUND_COLOR[1], MAIN_WINDOW_BACKGROUND_COLOR[2]));
+        sidePanel = new JPanel();
+        sidePanel.setBorder(new EmptyBorder(SCORE_PANEL_MARGINS, SCORE_PANEL_MARGINS, SCORE_PANEL_MARGINS, SCORE_PANEL_MARGINS));
+        sidePanel.setLayout(new GridLayout(0, 1, 0, SCORE_PANEL_MARGINS));
+        sidePanel.setBackground(new Color(MAIN_WINDOW_BACKGROUND_COLOR[0], MAIN_WINDOW_BACKGROUND_COLOR[1], MAIN_WINDOW_BACKGROUND_COLOR[2]));
 
-      gameScorePanel = new JPanel();
-      gameScorePanel.setLayout(new GridLayout(0, 1, 0, GAME_AND_ROUND_SCORE_PANEL_MARGINS));
-      gameScorePanel.setBackground(new Color(MAIN_WINDOW_BACKGROUND_COLOR[0], MAIN_WINDOW_BACKGROUND_COLOR[1], MAIN_WINDOW_BACKGROUND_COLOR[2]));
+        gameScorePanel = new JPanel();
+        gameScorePanel.setLayout(new GridLayout(0, 1, 0, GAME_AND_ROUND_SCORE_PANEL_MARGINS));
+        gameScorePanel.setBackground(new Color(MAIN_WINDOW_BACKGROUND_COLOR[0], MAIN_WINDOW_BACKGROUND_COLOR[1], MAIN_WINDOW_BACKGROUND_COLOR[2]));
 
-      roundScorePanel = new JPanel();
-      roundScorePanel.setLayout(new GridLayout(0, 1, 0, GAME_AND_ROUND_SCORE_PANEL_MARGINS));
-      roundScorePanel.setBackground(new Color(MAIN_WINDOW_BACKGROUND_COLOR[0], MAIN_WINDOW_BACKGROUND_COLOR[1], MAIN_WINDOW_BACKGROUND_COLOR[2]));
+        roundScorePanel = new JPanel();
+        roundScorePanel.setLayout(new GridLayout(0, 1, 0, GAME_AND_ROUND_SCORE_PANEL_MARGINS));
+        roundScorePanel.setBackground(new Color(MAIN_WINDOW_BACKGROUND_COLOR[0], MAIN_WINDOW_BACKGROUND_COLOR[1], MAIN_WINDOW_BACKGROUND_COLOR[2]));
 
-      gameScoresHeading = new JLabel(GAME_SCORE_PANEL_HEADING);
-      gameScoresHeading.setHorizontalAlignment(JLabel.LEFT);
-      gameScoresHeading.setFont(scoresHeadingFont);
-      gameScoresHeading.setForeground(new Color(SCORES_HEADING_FONT_COLOR[0], SCORES_HEADING_FONT_COLOR[1], SCORES_HEADING_FONT_COLOR[2]));
-      gameScorePanel.add(gameScoresHeading);
+        gameScoresHeading = new JLabel(GAME_SCORE_PANEL_HEADING);
+        gameScoresHeading.setHorizontalAlignment(JLabel.LEFT);
+        gameScoresHeading.setFont(scoresHeadingFont);
+        gameScoresHeading.setForeground(new Color(SCORES_HEADING_FONT_COLOR[0], SCORES_HEADING_FONT_COLOR[1], SCORES_HEADING_FONT_COLOR[2]));
+        gameScorePanel.add(gameScoresHeading);
 
-      roundScoresHeading = new JLabel(ROUND_SCORE_PANEL_HEADING);
-      roundScoresHeading.setHorizontalAlignment(JLabel.LEFT);
-      roundScoresHeading.setFont(scoresHeadingFont);
-      roundScoresHeading.setForeground(new Color(SCORES_HEADING_FONT_COLOR[0], SCORES_HEADING_FONT_COLOR[1], SCORES_HEADING_FONT_COLOR[2]));
-      roundScorePanel.add(roundScoresHeading);
+        roundScoresHeading = new JLabel(ROUND_SCORE_PANEL_HEADING);
+        roundScoresHeading.setHorizontalAlignment(JLabel.LEFT);
+        roundScoresHeading.setFont(scoresHeadingFont);
+        roundScoresHeading.setForeground(new Color(SCORES_HEADING_FONT_COLOR[0], SCORES_HEADING_FONT_COLOR[1], SCORES_HEADING_FONT_COLOR[2]));
+        roundScorePanel.add(roundScoresHeading);
 
-      playerGameScores = new int[playerCount];
-      playerRoundScores = new int[playerCount];
-      playerRoundScoreLabels = new JLabel[playerCount];
-      playerGameScoreLabels = new JLabel[playerCount];
+        playerGameScores = new int[playerCount];
+        playerRoundScores = new int[playerCount];
+        playerRoundScoreLabels = new JLabel[playerCount];
+        playerGameScoreLabels = new JLabel[playerCount];
 
-      for (int playerIndex = 0; playerIndex < playerCount; playerIndex++)
-      {
-        playerGameScores[playerIndex] = 0;
-        playerRoundScores[playerIndex] = 0;
+        for (int playerIndex = 0; playerIndex < playerCount; playerIndex++)
+        {
+            playerGameScores[playerIndex] = 0;
+            playerRoundScores[playerIndex] = 0;
 
-        playerGameScoreLabels[playerIndex] = new JLabel(NOT_PLAYER_TURN_INDICATOR + "Player " + (playerIndex + 1) + ": " + playerGameScores[playerIndex]);
-        playerGameScoreLabels[playerIndex].setFont(scoresFont);
-        playerGameScoreLabels[playerIndex].setForeground(new Color(SCORES_FONT_COLOR[0], SCORES_FONT_COLOR[1], SCORES_FONT_COLOR[2]));
-        gameScorePanel.add(playerGameScoreLabels[playerIndex]);
+            playerGameScoreLabels[playerIndex] = new JLabel(NOT_PLAYER_TURN_INDICATOR + "Player " + (playerIndex + 1) + ": " + playerGameScores[playerIndex]);
+            playerGameScoreLabels[playerIndex].setFont(scoresFont);
+            playerGameScoreLabels[playerIndex].setForeground(new Color(SCORES_FONT_COLOR[0], SCORES_FONT_COLOR[1], SCORES_FONT_COLOR[2]));
+            gameScorePanel.add(playerGameScoreLabels[playerIndex]);
 
-        playerRoundScoreLabels[playerIndex] = new JLabel(NOT_PLAYER_TURN_INDICATOR + "Player " + (playerIndex + 1) + ": " + playerGameScores[playerIndex]);
-        playerRoundScoreLabels[playerIndex].setFont(scoresFont);
-        playerRoundScoreLabels[playerIndex].setForeground(new Color(SCORES_FONT_COLOR[0], SCORES_FONT_COLOR[1], SCORES_FONT_COLOR[2]));
-        roundScorePanel.add(playerRoundScoreLabels[playerIndex]);
+            playerRoundScoreLabels[playerIndex] = new JLabel(NOT_PLAYER_TURN_INDICATOR + "Player " + (playerIndex + 1) + ": " + playerGameScores[playerIndex]);
+            playerRoundScoreLabels[playerIndex].setFont(scoresFont);
+            playerRoundScoreLabels[playerIndex].setForeground(new Color(SCORES_FONT_COLOR[0], SCORES_FONT_COLOR[1], SCORES_FONT_COLOR[2]));
+            roundScorePanel.add(playerRoundScoreLabels[playerIndex]);
 
-      } // end of for (int playerIndex = 0; playerIndex < playerCount; playerIndex++)
+        } // end of for (int playerIndex = 0; playerIndex < playerCount; playerIndex++)
 
-      playerRoundScoreLabels[0].setText(playerRoundScoreLabels[0].getText().replaceAll(NOT_PLAYER_TURN_INDICATOR, PLAYER_TURN_INDICATOR));
+        playerRoundScoreLabels[0].setText(playerRoundScoreLabels[0].getText().replaceAll(NOT_PLAYER_TURN_INDICATOR, PLAYER_TURN_INDICATOR));
 
-      sidePanel.add(gameScorePanel);
-      sidePanel.add(roundScorePanel);
+        sidePanel.add(gameScorePanel);
+        sidePanel.add(roundScorePanel);
 
     } // end of method createSidePanel()
 
