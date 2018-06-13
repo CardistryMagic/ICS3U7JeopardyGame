@@ -1,0 +1,15 @@
+#BlueJ class context
+comment0.target=HighScoreManager
+comment0.text=\r\n\ Determines\ the\ high\ score\ of\ the\ jeopardy\ game.\r\n\ \r\n\ @author\ Varun\ Sekar\ and\ Devdigvijay\ Singh\r\n\ @version\ 3.0\ 2018-06-12\r\n
+comment1.params=
+comment1.target=HighScoreManager()
+comment1.text=\r\n\ Sets\ the\ default\ values\ of\ the\ instance\ fields.\r\n
+comment2.params=
+comment2.target=void\ readHighScore()
+comment3.params=
+comment3.target=int\ getHighScore()
+comment3.text=\r\n\ Returns\ the\ high\ score.\r\n\ \r\n\ @return\ the\ high\ score\r\n
+comment4.params=score
+comment4.target=void\ addScore(int)
+comment4.text=\r\n\ Adds\ a\ new\ score\ and\ determines\ if\ it\ is\ the\ new\ high\ score.\r\n\ \r\n\ @param\ score\ the\ score\ of\ a\ player\r\n
+numComments=5

@@ -142,6 +142,7 @@ public class JeopardyGame
     private static final String END_SCREEN_FONT_FAMILY = "Century Gothic";
     private static final int END_SCREEN_PANEL_MARGINS = 0;
     private static final int END_SCREEN_SCORES_FONT_SIZE = 40;
+    private static final String HIGH_SCORE_DIALOG_TITLE = "High Score";
 
     /* instance fields */
     private JFrame frame;
@@ -168,7 +169,7 @@ public class JeopardyGame
     private JButton quitButton;
     private JButton settingsButton;
     private JButton nextRoundButton;
-    private JButton highscoresButton;
+    private JButton highScoreButton;
     private int[] playerGameScores;
     private int[] playerRoundScores;
     private JLabel[] playerGameScoreLabels;
@@ -190,6 +191,7 @@ public class JeopardyGame
     private Font endScreenFont;
     private JLabel endScreenScoresLabel;
     private Font endScreenScoresFont;
+    private HighScoreManager highScoreManager;
 
     /**
      * Creates a new JeopardyGame with default characteristics.
@@ -203,6 +205,7 @@ public class JeopardyGame
         answerCount = MINIMUM_NUMBER_OF_ANSWERS;
         currentRoundNumber = 1;
         answerDialogManager = new AnswerDialogManager();
+        highScoreManager = new HighScoreManager();
     } // end of constructor JeopardyGame()
 
     /**
@@ -263,6 +266,7 @@ public class JeopardyGame
 
         currentRoundNumber = 1;
         answerDialogManager = new AnswerDialogManager();
+        highScoreManager = new HighScoreManager();
 
         makeFrame();
     } // end of constructor JeopardyGame(Category[] chosenCategories, Category[] allCategories, int numberOfPlayers, int numberOfRounds, int numberOfAnswers, int currentRoundNumber)
@@ -335,9 +339,20 @@ public class JeopardyGame
     } // end of method quit()
 
     /*
+     * Displays the highscore in a dialog message.
+     */
+    private void displayHighScore()
+    {
+        int highScore = highScoreManager.getHighScore();
+        String textToDisplay = "High Score: " + Integer.toString(highScore);
+
+        JOptionPane.showMessageDialog(null, textToDisplay, HIGH_SCORE_DIALOG_TITLE,JOptionPane.PLAIN_MESSAGE);
+    } // end of displayHighScore()
+
+    /*
      * Finishes the game by displaying a summary of scores.
      */
-    public void finishGame()
+    private void finishGame()
     {
         BorderLayout layout = (BorderLayout) (frame.getContentPane()).getLayout();
         frame.remove(layout.getLayoutComponent(BorderLayout.CENTER));
@@ -382,6 +397,12 @@ public class JeopardyGame
      */
     public void nextRound()
     {
+      for (int playerIndex = 0; playerIndex < playerCount; playerIndex++)
+      {
+          highScoreManager.addScore(playerRoundScores[playerIndex]);
+          playerRoundScores[playerIndex] = 0;
+          playerRoundScoreLabels[playerIndex].setText(NOT_PLAYER_TURN_INDICATOR + "Player " + (playerIndex + 1) + ": " + playerRoundScores[playerIndex]);
+      } // end of for (int playerIndex = 0; playerIndex < playerCount; playerIndex++)
         if (currentRoundNumber < roundCount)
         {
             for (int answerIndex = 0; answerIndex < answerCount; answerIndex++)
@@ -397,11 +418,7 @@ public class JeopardyGame
             currentRoundNumber++;
             roundNumberLabel.setText(ROUND_NUMBER_PANEL_HEADING + Integer.toString(currentRoundNumber) + "  ");
 
-            for (int playerIndex = 0; playerIndex < playerCount; playerIndex++)
-            {
-                playerRoundScores[playerIndex] = 0;
-                playerRoundScoreLabels[playerIndex].setText(NOT_PLAYER_TURN_INDICATOR + "Player " + (playerIndex + 1) + ": " + playerRoundScores[playerIndex]);
-            } // end of for (int playerIndex = 0; playerIndex < playerCount; playerIndex++)
+
 
             playerRoundScoreLabels[0].setText(playerRoundScoreLabels[0].getText().replaceAll(NOT_PLAYER_TURN_INDICATOR, PLAYER_TURN_INDICATOR));
 
@@ -544,10 +561,10 @@ public class JeopardyGame
         controlPanel.setLayout(new FlowLayout(FlowLayout.CENTER, CONTROL_PANEL_MARGINS, 0));
         controlPanelListener = new ControlPanelListener();
 
-        highscoresButton = new JButton(HIGHSCORES_BUTTON_TEXT);
-        highscoresButton.setPreferredSize(new Dimension(CONTROL_PANEL_BUTTON_SIZE[0], CONTROL_PANEL_BUTTON_SIZE[1]));
-        highscoresButton.addActionListener(controlPanelListener);
-        controlPanel.add(highscoresButton);
+        highScoreButton = new JButton(HIGHSCORES_BUTTON_TEXT);
+        highScoreButton.setPreferredSize(new Dimension(CONTROL_PANEL_BUTTON_SIZE[0], CONTROL_PANEL_BUTTON_SIZE[1]));
+        highScoreButton.addActionListener(controlPanelListener);
+        controlPanel.add(highScoreButton);
 
         resetGameButton = new JButton(RESET_GAME_BUTTON_TEXT);
         resetGameButton.setPreferredSize(new Dimension(CONTROL_PANEL_BUTTON_SIZE[0], CONTROL_PANEL_BUTTON_SIZE[1]));
@@ -781,6 +798,10 @@ public class JeopardyGame
             {
                 nextRound();
             } // end of if (source == nextRoundButton)
+            else if (source == highScoreButton)
+            {
+                displayHighScore();
+            }
         } // end of method actionPerformed(ActionEvent event)
     } // end of class ControlPanelListener implements ActionListener
 } // end of class JeopardyGame
