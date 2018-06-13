@@ -40,6 +40,26 @@ public class JeopardyGame
     /* class fields */
 
     /**
+     * The source for the main categories data file.
+     */
+    public static final String CATEGORY_DATA_FILE_SOURCE = "resources/data_files/categories.data";
+
+    /**
+     * The identifier for questions in data files.
+     */
+    public static final String QUESTION_IDENTIFIER = "?";
+
+    /**
+     * The file extension for data files.
+     */
+    public static final String FILE_EXTENSION = ".data";
+
+    /**
+     * The marker for correct questions.
+     */
+    public static final String CORRECT_MARKER = "*";
+
+    /**
      * The number of answers per category.
      */
     public static final int ANSWER_COUNT = 5;
@@ -97,7 +117,12 @@ public class JeopardyGame
     /**
      * The maximum number of categories.
      */
-    public static final int MAXIMUM_NUMBER_OF_CATEGORIES = 5;
+    public static final int MAXIMUM_NUMBER_OF_CATEGORIES = CATEGORY_COUNT;
+
+    /**
+     * The directory for data files.
+     */
+    public static final String DATA_FILES_DIRECTORY = "resources/data_files/";
 
     private static final String JEOPARDY_BANNER_TEXT = "JEOPARDY!";
     private static final String JEOPARDY_FONT_SOURCE = "resources/fonts/jeopardy.ttf";
@@ -141,7 +166,7 @@ public class JeopardyGame
     private static final int END_SCREEN_FONT_SIZE = 80;
     private static final String END_SCREEN_FONT_FAMILY = "Century Gothic";
     private static final int END_SCREEN_PANEL_MARGINS = 0;
-    private static final int END_SCREEN_SCORES_FONT_SIZE = 40;
+    private static final int END_SCREEN_SCORES_FONT_SIZE = 30;
     private static final String HIGH_SCORE_DIALOG_TITLE = "High Score";
 
     /* instance fields */
@@ -397,6 +422,8 @@ public class JeopardyGame
      */
     public void nextRound()
     {
+      displayNextRoundMessage();
+
       for (int playerIndex = 0; playerIndex < playerCount; playerIndex++)
       {
           highScoreManager.addScore(playerRoundScores[playerIndex]);
@@ -414,7 +441,7 @@ public class JeopardyGame
                 } // end of for (int categoryIndex = 0; categoryIndex < CATEGORY_COUNT; categoryIndex++)
             } // end of for (int answerIndex = 0; answerIndex < ANSWER_COUNT; answerIndex++)
 
-            displayNextRoundMessage();
+
             currentRoundNumber++;
             roundNumberLabel.setText(ROUND_NUMBER_PANEL_HEADING + Integer.toString(currentRoundNumber) + "  ");
 

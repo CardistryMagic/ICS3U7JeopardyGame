@@ -13,10 +13,6 @@ import java.io.IOException;
 public class Category
 {
     /* class fields */
-    private static final String CORRECT_QUESTION_IDENTIFIER = "*";
-    private static final String DATA_FILES_DIRECTORY = "resources/data_files/";
-    private static final String FILE_EXTENSION = ".data";
-    private static final String QUESTION_IDENTIFIER = "?";
 
     /* instance fields */
     private ArrayList<Answer> answers;
@@ -33,7 +29,7 @@ public class Category
     public Category() throws FileNotFoundException
     {
         name = "";
-        dataFileSource = DATA_FILES_DIRECTORY + name + FILE_EXTENSION;
+        dataFileSource = JeopardyGame.DATA_FILES_DIRECTORY + name + JeopardyGame.FILE_EXTENSION;
         answers = new ArrayList<Answer>();
         dataFile = new BufferedReader(new FileReader(dataFileSource));
         enabled = true;
@@ -41,7 +37,7 @@ public class Category
 
     /**
      * Creates a category with the specified name.
-     * 
+     *
      * @param name the name of this category; may not be <code>null</code>
      */
     public Category(String name) throws FileNotFoundException
@@ -61,7 +57,7 @@ public class Category
         dataFileSource = name;
         dataFileSource = dataFileSource.toLowerCase();
         dataFileSource = dataFileSource.replaceAll(" ", "");
-        dataFileSource = DATA_FILES_DIRECTORY + dataFileSource + FILE_EXTENSION;
+        dataFileSource = JeopardyGame.DATA_FILES_DIRECTORY + dataFileSource + JeopardyGame.FILE_EXTENSION;
         dataFile = new BufferedReader(new FileReader(dataFileSource));
         enabled = true;
     } // end of constructor Category(String name)
@@ -70,7 +66,7 @@ public class Category
 
     /**
      * Returns the name of this category.
-     * 
+     *
      * @return the name of this category
      */
     public String getName()
@@ -80,7 +76,7 @@ public class Category
 
     /**
      * Returns all Answers in this category.
-     * 
+     *
      * @return all Answers in this category
      */
     public Answer[] getAllAnswers()
@@ -104,7 +100,7 @@ public class Category
 
     /**
      * Returns the Answer with the specified point value.
-     * 
+     *
      * @param pointValue the point value of the desired answer; must be a non-negative integer
      * @return the answer with the the specified point value
      */
@@ -122,10 +118,10 @@ public class Category
         // Return invalid answer if point reward does not exist.
         return new Answer(pointValue);
     } // end of method getAnswer(int pointValue)
-    
+
     /**
      * Returns if this category is enabled or not.
-     * 
+     *
      * @return <code>true</code> is this category is enabled, otherwise <code>false</code>
      */
     public boolean isEnabled()
@@ -137,7 +133,7 @@ public class Category
 
     /**
      * Sets the name of this category.
-     * 
+     *
      * @param name the new name of this category; may not be <code>null</code>
      */
     public void setName(String name)
@@ -151,7 +147,7 @@ public class Category
 
     /**
      * Sets the data file source of this category.
-     * 
+     *
      * @param dataFileSource the data file source of this category; must exist in directory of this class
      */
     public void setDataFileSource(String dataFileSource)
@@ -174,7 +170,7 @@ public class Category
 
     /**
      * Marks the Answer with the specified point reward as used.
-     * 
+     *
      * @param pointReward the point reward of the Answer to mark as used
      */
     public void useAnswer(int pointReward)
@@ -186,8 +182,8 @@ public class Category
                 currentAnswer.use();
             } // end of if (currentAnswer.getPointReward() == pointReward)
         } // end of for (Answer currentAnswer : answers)
-    } // end of method useAnswer(int pointReward) 
-    
+    } // end of method useAnswer(int pointReward)
+
     /**
      *  Enables this category.
      */
@@ -195,7 +191,7 @@ public class Category
     {
         enabled = true;
     } // end of method enable()
-    
+
     /**
      * Disables this category.
      */
@@ -223,9 +219,9 @@ public class Category
 
             if (currentLine != null)
             {
-                if (currentLine.indexOf(QUESTION_IDENTIFIER) != -1)
+                if (currentLine.indexOf(JeopardyGame.QUESTION_IDENTIFIER) != -1)
                 {
-                    if (currentLine.substring(currentLine.length() - 1, currentLine.length()).equals(CORRECT_QUESTION_IDENTIFIER))
+                    if (currentLine.substring(currentLine.length() - 1, currentLine.length()).equals(JeopardyGame.CORRECT_MARKER))
                     {
                         // Add correct question to the current answer.
                         currentAnswer.addQuestion(currentLine.substring(0, currentLine.length() - 1));
@@ -235,8 +231,8 @@ public class Category
                     {
                         // Add a possible incorrect question to the current answer.
                         currentAnswer.addQuestion(currentLine);
-                    } // end of if (currentLine.substring(currentLine.length() - 1, currentLine.length()).equals(CORRECT_QUESTION_IDENTIFIER))
-                } // end of if (currentLine.indexOf(QUESTION_IDENTIFIER) == QUESTION_IDENTIFIER_INDEX)
+                    } // end of if (currentLine.substring(currentLine.length() - 1, currentLine.length()).equals(JeopardyGame.CORRECT_MARKER))
+                } // end of if (currentLine.indexOf(JeopardyGame.QUESTION_IDENTIFIER) == JeopardyGame.QUESTION_IDENTIFIER_INDEX)
                 else
                 {
                     if (currentAnswer != null)
