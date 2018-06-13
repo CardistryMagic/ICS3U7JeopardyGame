@@ -28,6 +28,7 @@ public class AnswerDialog
     private static final String CORRECT_TEXT = "CORRECT";
     private static final String INCORRECT_TEXT = "INCORRECT";
     private static final int FONT_SIZE_CORRECTION_FACTOR = 3;
+    private static final String CONTINUE_BUTTON_TEXT = "CONTINUE";
 
     /* instance fields */
     private Answer answer;
@@ -50,6 +51,7 @@ public class AnswerDialog
     private boolean displayResult;
     private Font resultFont;
     private JPanel fillingRectangle;
+    private ActionListener continueButtonActionListener;
 
     /* constructors */
 
@@ -133,6 +135,16 @@ public class AnswerDialog
             this.answer = answer;
         } // end of if (ans != null)
     } // end of method setAnswer(Answer answer)
+
+    /**
+     * Sets the action listener to the continue button.
+     *
+     * @param listener the action listener for the continue button
+     */
+    public void setContinueButtonActionListener(ActionListener listener)
+    {
+        continueButtonActionListener = listener;
+    } // end of method setContinueButtonActionListener(ActionListener listener)
 
     /* private methods */
 
@@ -286,13 +298,17 @@ public class AnswerDialog
 
         answerLabel.setFont(resultFont);
         answerLabelPanel.setLayout(new FlowLayout(FlowLayout.CENTER, MARGINS, MARGINS));
+
         BorderLayout layout = (BorderLayout) (frame.getContentPane()).getLayout();
         frame.remove(layout.getLayoutComponent(BorderLayout.CENTER));
-        
+
+        submitButton.setText(CONTINUE_BUTTON_TEXT);
+        submitButton.addActionListener(continueButtonActionListener);
+
         fillingRectangle = new JPanel();
         fillingRectangle.setBackground(Color.BLACK);
         frame.add(fillingRectangle, BorderLayout.CENTER);
-        
+
         frame.pack();
         frame.repaint();
     }
@@ -320,7 +336,7 @@ public class AnswerDialog
             {
                 if (displayResult)
                 {
-                    frame.setVisible(false);
+                    frame.dispose();
                     finished = false;
                 }
                 else
