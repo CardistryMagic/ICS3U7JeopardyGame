@@ -1,10 +1,10 @@
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.FileReader;
-import java.io.FileNotFoundException;
 
 /**
  * Determines the high score of the jeopardy game.
@@ -18,20 +18,21 @@ public class HighScoreManager
     private static final String DATA_FILE_SOURCE = "resources/data_files/highscore.data";
 
     /* instance fields */
-    private int highScore;
-    PrintWriter outputFile;
-    BufferedReader fileReader;
-    private boolean isCorrect;
     private boolean canBeRead;
+    private BufferedReader fileReader;
+    private int highScore;
+    private boolean isCorrect;
+    private PrintWriter outputFile;
     private String score;
 
     /* constructors */
-    
+
     /**
      * Sets the default values of the instance fields.
      */
     public HighScoreManager()
     {
+      // Initialize all fields with default values.
         outputFile = null;
         isCorrect = false;
         canBeRead = false;
@@ -39,53 +40,7 @@ public class HighScoreManager
         score = "";
     } // end of constructor HighScore()
 
-    private void readHighScore()
-    {
-        try
-        {
-            // establishes a connection to the text file
-            fileReader = new BufferedReader(new FileReader(DATA_FILE_SOURCE));
-
-            try
-            {
-                // reads the line of text from the text file
-                score = fileReader.readLine();
-                canBeRead = true;
-
-
-
-                highScore = Integer.parseInt(score);
-
-            }
-            catch (IOException exception)
-            {
-
-            } // end of catch (IOException exception)
-            catch (NumberFormatException exception)
-            {
-            }
-        }
-        catch (FileNotFoundException exception)
-        {
-            highScore = 0;
-            try
-            {
-                // creates a new output file
-                outputFile = new PrintWriter(new FileWriter(DATA_FILE_SOURCE));
-
-                outputFile.println(highScore);
-
-                isCorrect = true;
-
-                // close the file
-                outputFile.close();
-            }
-            catch (IOException ioexception)
-            {
-
-            } // end of catch (IOException ioexception)
-        } // end of catch (FileNotFoundException exception)
-    } // end of method readHighScore()
+    /* accessors */
 
     /**
      * Returns the high score.
@@ -96,6 +51,8 @@ public class HighScoreManager
     {
         return highScore;
     } // end of method getHighScore()
+
+    /* mutators */
 
     /**
      * Adds a new score and determines if it is the new high score.
@@ -108,15 +65,70 @@ public class HighScoreManager
         {
             try
             {
+              // Update high score.
                 highScore = score;
+
+                // Write high score to output file.
                 outputFile = new PrintWriter(new FileWriter(DATA_FILE_SOURCE));
                 outputFile.println(highScore);
                 outputFile.close();
             }
             catch (IOException ioexception)
             {
-
+              // Do nothing.
             } // end of catch (IOException ioexception)
         } // end of if (score > highScore)
     } // end of method addScore(int score)
+
+    /* private methods */
+
+    /*
+     * Reads the high score data file.
+     */
+    private void readHighScore()
+    {
+        try
+        {
+            // Establishes a connection to the data file.
+            fileReader = new BufferedReader(new FileReader(DATA_FILE_SOURCE));
+
+            try
+            {
+                // Reads the first line of the high score data file.
+                score = fileReader.readLine();
+
+                // Flag connection to data file.
+                canBeRead = true;
+
+                // Parse high score as an integer.
+                highScore = Integer.parseInt(score);
+
+            }
+            catch (IOException exception)
+            {
+              // Do nothing.
+            } // end of catch (IOException exception)
+            catch (NumberFormatException exception)
+            {
+              // Do nothing.
+            } // end of catch (NumberFormatException exception)
+        }
+        catch (FileNotFoundException exception)
+        {
+            highScore = 0;
+            try
+            {
+                // Establish connection to data file as an output.
+                outputFile = new PrintWriter(new FileWriter(DATA_FILE_SOURCE));
+                outputFile.println(highScore);
+                
+                // Close connection to data file output.
+                outputFile.close();
+            }
+            catch (IOException ioexception)
+            {
+              // Do nothing.
+            } // end of catch (IOException ioexception)
+        } // end of catch (FileNotFoundException exception)
+    } // end of method readHighScore()
 } // end of class HighScore

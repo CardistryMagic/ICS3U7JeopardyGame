@@ -1,7 +1,36 @@
-import javax.swing.*;
-import java.awt.event.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.FontFormatException;
+import java.awt.Graphics;
+import java.awt.GridLayout;
+import java.awt.image.BufferedImage;
+import java.awt.Image;
+import java.awt.Toolkit;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.IOException;
+import java.util.ArrayList;
 import javax.swing.border.EmptyBorder;
+import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JRadioButton;
 
 /**
  * A window to display the answer and prompt for the selection of the correct question.
@@ -190,6 +219,7 @@ public class AnswerDialog
      */
     private void importFonts()
     {
+      // Import fonts.
         answerFont = new Font(FONT_FAMILY, Font.PLAIN, ANSWER_FONT_SIZE);
         questionFont = new Font(FONT_FAMILY, Font.PLAIN, QUESTION_FONT_SIZE);
         resultFont = new Font(FONT_FAMILY, Font.PLAIN, Math.round(frameHeight/FONT_SIZE_CORRECTION_FACTOR));
@@ -200,20 +230,25 @@ public class AnswerDialog
      */
     private void createQuestionPanel()
     {
+      // Create question panel.
         questionPanel = new JPanel();
         questionPanel.setBorder(new EmptyBorder(MARGINS, MARGINS, MARGINS, MARGINS));
         questionPanel.setLayout(new GridLayout(0, GRID_LAYOUT_COLUMNS, MARGINS, MARGINS));
         questionPanel.setBackground(Color.BLACK);
 
+        // Create button group to store all radio buttons.
         questionButtonGroup = new ButtonGroup();
         questionSelectionButtons = new JRadioButton[allQuestions.length];
 
         for (int index = 0; index < allQuestions.length; index++)
         {
+          // Create radio button with current question.
             questionSelectionButtons[index] = new JRadioButton(addLineBreaks(allQuestions[index], FRAME_WIDTH, QUESTION_PIXEL_WIDTH_PER_CHARACTER));
             questionSelectionButtons[index].setFont(questionFont);
             questionSelectionButtons[index].setBackground(Color.BLACK);
             questionSelectionButtons[index].setForeground(Color.WHITE);
+
+            // Add radio button to button group and panel.
             questionButtonGroup.add(questionSelectionButtons[index]);
             questionPanel.add(questionSelectionButtons[index]);
         } // end of for (int index = 0; index < allQuestions.length; index++)
@@ -224,16 +259,20 @@ public class AnswerDialog
      */
     private void createSubmitButtonPanel()
     {
+      // Create submit button panel.
         submitPanel = new JPanel();
         submitPanel.setLayout(new FlowLayout(FlowLayout.CENTER, MARGINS, MARGINS));
         submitPanel.setBackground(Color.BLACK);
 
+        // Create submit button.
         submitButton = new JButton(SUBMIT_BUTTON_TEXT);
         submitButton.setPreferredSize(new Dimension(SUBMIT_BUTTON_WIDTH, SUBMIT_BUTTON_HEIGHT));
         submitButton.setBackground(Color.RED);
         submitButton.setForeground(Color.YELLOW);
         submitButton.addActionListener(new SubmitButtonListener());
         submitButton.setFont(answerFont);
+
+        // Add submit panel to submit button panel.
         submitPanel.add(submitButton);
     } // end of method createSubmitButtonPanel
 
@@ -242,6 +281,7 @@ public class AnswerDialog
      */
     private void makeFrame()
     {
+      // Create frame.
         frame = new JFrame(frameTitle);
         frame.setLayout(new BorderLayout());
         frameWidth = FRAME_WIDTH;
@@ -251,30 +291,46 @@ public class AnswerDialog
         frame.setUndecorated(true);
         frame.getRootPane().setBorder(BorderFactory.createMatteBorder(MARGINS, MARGINS, MARGINS, MARGINS, Color.BLUE));
 
+        // Get screen dimensions.
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
+        // Center frame on screen.
         int xLocation = Math.round((screenSize.width - frameWidth)/2);
         int yLocation = Math.round((screenSize.height - frameHeight)/2);
         frame.setLocation(xLocation, yLocation);
 
+        // Import fonts.
         importFonts();
 
+        // Create question panel.
         createQuestionPanel();
+
+        // Add question panel to frame.
         frame.add(questionPanel, BorderLayout.CENTER);
 
+        // Create submit button panel.
         createSubmitButtonPanel();
+
+        // Add submit button panel to frame.
         frame.add(submitPanel, BorderLayout.PAGE_END);
 
+        // Create answer label panel.
         answerLabelPanel = new JPanel();
         answerLabelPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
         answerLabelPanel.setBackground(Color.BLACK);
         answerLabelPanel.setBorder(new EmptyBorder(MARGINS, MARGINS, MARGINS, MARGINS));
+
+        // Create answer label.
         answerLabel = new JLabel(addLineBreaks(answer.getText(), FRAME_WIDTH, ANSWER_PIXEL_WIDTH_PER_CHARACTER));
         answerLabel.setFont(answerFont);
         answerLabel.setBackground(Color.BLACK);
         answerLabel.setForeground(Color.WHITE);
         answerLabelPanel.add(answerLabel);
+
+        // Add answer label panel to frame.
         frame.add(answerLabelPanel, BorderLayout.PAGE_START);
 
+        // Display frame.
         frame.pack();
         frame.setVisible(true);
     } // end of makeFrame()
@@ -311,7 +367,7 @@ public class AnswerDialog
 
         frame.pack();
         frame.repaint();
-    }
+    } // end of method showResult(boolean correctQuestionChosen)
 
     /* private classes */
 
@@ -329,13 +385,11 @@ public class AnswerDialog
         {
             Object source = event.getSource();
 
-            // checks which radio button was clicked and whether it was the right answer
-            // if right, the points will be added to the player's total
-            // if wrong, the points rewarded for the qustion will be removed from the player's total
             if (source == submitButton)
             {
                 if (displayResult)
                 {
+                  // Dispose of current frame.
                     frame.dispose();
                     finished = false;
                 }
@@ -346,8 +400,8 @@ public class AnswerDialog
                     {
                         if (questionSelectionButtons[index].isSelected() && allQuestions[index].equals(answer.getCorrectQuestion()))
                         {
+                          // Flag correct question chosen.
                             correctQuestionChosen = true;
-                            //JeopardyGame.updateScore(answer.getPointReward());
                         } // end of if (questionSelectionButtons[index].isSelected() && allQuestions[index].equals(answer.getCorrectQuestion()))
                     } // end of for (int counter = 0; counter < QUESTION_COUNT; counter++)
 
@@ -356,14 +410,10 @@ public class AnswerDialog
                         correctQuestionSelected = true;
                     } // end of if (correctQuestionChosen)
 
+                    // Show result.
                     showResult(correctQuestionSelected);
                 } // end of if (displayResult)
             } // end of (source == submitButton)
         } // end of method actionPerformed(ActionEvent event)
     } // end of class SelectionPanelListener implements ActionListener
 } // end of class AnswerDialog
-
-// Category basics = new Category("basics");
-// basics.importData();
-// Answer ans = basics.getAnswer(20);
-// AnswerDialog dia = new AnswerDialog(ans);
