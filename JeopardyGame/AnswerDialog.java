@@ -23,7 +23,7 @@ public class AnswerDialog
     private static final String FONT_FAMILY = "Century Gothic";
     private static final int ANSWER_FONT_SIZE = 24;
     private static final int QUESTION_FONT_SIZE = 16;
-    private static final int ANSWER_PIXEL_WIDTH_PER_CHARACTER = 16;
+    private static final int ANSWER_PIXEL_WIDTH_PER_CHARACTER = 18;
     private static final int QUESTION_PIXEL_WIDTH_PER_CHARACTER = 11;
     private static final String CORRECT_TEXT = "CORRECT";
     private static final String INCORRECT_TEXT = "INCORRECT";

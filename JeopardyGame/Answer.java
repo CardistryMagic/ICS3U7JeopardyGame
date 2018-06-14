@@ -8,8 +8,6 @@ import java.util.ArrayList;
  */
 public class Answer
 {
-    /* class fields */
-
     /* instance fields */
     private String correctQuestion;
     private boolean hasBeenUsed;
@@ -33,7 +31,7 @@ public class Answer
 
     /**
      * Creates an answer with the specified state of being answered or not.
-     * 
+     *
      * @param hasBeenUsed whether this answer has been used; <code>true</code> if it has been used; otherwise <code>false</code>
      */
     public Answer(boolean hasBeenUsed)
@@ -47,7 +45,7 @@ public class Answer
 
     /**
      * Creates an answer with the specified point reward.
-     * 
+     *
      * @param pointReward the points rewarded for selecting the correct question; must be a non-negative integer
      */
     public Answer(int pointReward)
@@ -56,7 +54,7 @@ public class Answer
         correctQuestion = "";
         possibleQuestions = new ArrayList<String>();
         text = "";
-        
+
         // Validate input.
         if (pointReward > 0)
         {
@@ -72,7 +70,7 @@ public class Answer
 
     /**
      * Creates an answer with the specified category, text and point reward.
-     * 
+     *
      * @param text a String stating this answer; may not be <code>null</code>
      * @param pointReward the points rewarded for selecting the correct question to this answer; must be a non-negative integer
      */
@@ -111,7 +109,7 @@ public class Answer
 
     /**
      * Returns whether or not this answer has been used.
-     * 
+     *
      * @return if this answer has been used or not; <code>true</code> if the answer has been used, otherwise <code>false</code>
      */
     public boolean isUsed()
@@ -121,7 +119,7 @@ public class Answer
 
     /**
      * Returns the correct question of this answer.
-     * 
+     *
      * @return the correct question of this answer
      */
     public String getCorrectQuestion()
@@ -131,7 +129,7 @@ public class Answer
 
     /**
      * Returns the point reward of this answer.
-     * 
+     *
      * @return the point reward of this answer.
      */
     public int getPointReward()
@@ -141,7 +139,7 @@ public class Answer
 
     /**
      * Returns all possible questions for this answer.
-     * 
+     *
      * @return all possible answers for this answer
      */
     public String[] getPossibleQuestions()
@@ -161,7 +159,7 @@ public class Answer
 
     /**
      * Returns the text of this answer.
-     * 
+     *
      * @return the text of this answer
      */
     public String getText()
@@ -181,7 +179,7 @@ public class Answer
 
     /**
      * Sets the correct question of this answer.
-     * 
+     *
      * @param correctQuestion the correct question of this answer; may not be <code>null</code>
      */
     public void setCorrectQuestion(String correctQuestion)
@@ -201,7 +199,7 @@ public class Answer
 
     /**
      * Sets the point rewards of this answer.
-     * 
+     *
      * @param pointReward the points gained from selecting the right question to this answer; must be a non-negative integer
      */
     public void setPointReward(int pointReward)
@@ -215,7 +213,7 @@ public class Answer
 
     /**
      * Adds a question to the possible answers.
-     * 
+     *
      * @param question a possible question to this answer; may not be <code>null</code>
      */
     public void addQuestion(String question)
@@ -229,7 +227,7 @@ public class Answer
 
     /**
      * Removes a question from the possible questions.
-     * 
+     *
      * @param question a pre-existing incorrect question to this answer; may not be <code>null</code>
      */
     public void removeQuestion(String question)
@@ -245,4 +243,3 @@ public class Answer
         } // end of if (answer != null)
     } // end of method removeQuestion(String question)
 } // end of class Answer
-

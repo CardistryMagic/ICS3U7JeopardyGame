@@ -422,14 +422,14 @@ public class JeopardyGame
      */
     public void nextRound()
     {
-      displayNextRoundMessage();
+        displayNextRoundMessage();
 
-      for (int playerIndex = 0; playerIndex < playerCount; playerIndex++)
-      {
-          highScoreManager.addScore(playerRoundScores[playerIndex]);
-          playerRoundScores[playerIndex] = 0;
-          playerRoundScoreLabels[playerIndex].setText(NOT_PLAYER_TURN_INDICATOR + "Player " + (playerIndex + 1) + ": " + playerRoundScores[playerIndex]);
-      } // end of for (int playerIndex = 0; playerIndex < playerCount; playerIndex++)
+        for (int playerIndex = 0; playerIndex < playerCount; playerIndex++)
+        {
+            highScoreManager.addScore(playerRoundScores[playerIndex]);
+            playerRoundScores[playerIndex] = 0;
+            playerRoundScoreLabels[playerIndex].setText(NOT_PLAYER_TURN_INDICATOR + "Player " + (playerIndex + 1) + ": " + playerRoundScores[playerIndex]);
+        } // end of for (int playerIndex = 0; playerIndex < playerCount; playerIndex++)
         if (currentRoundNumber < roundCount)
         {
             for (int answerIndex = 0; answerIndex < answerCount; answerIndex++)
@@ -441,14 +441,10 @@ public class JeopardyGame
                 } // end of for (int categoryIndex = 0; categoryIndex < CATEGORY_COUNT; categoryIndex++)
             } // end of for (int answerIndex = 0; answerIndex < ANSWER_COUNT; answerIndex++)
 
-
             currentRoundNumber++;
             roundNumberLabel.setText(ROUND_NUMBER_PANEL_HEADING + Integer.toString(currentRoundNumber) + "  ");
 
-
-
             playerRoundScoreLabels[0].setText(playerRoundScoreLabels[0].getText().replaceAll(NOT_PLAYER_TURN_INDICATOR, PLAYER_TURN_INDICATOR));
-
             if (currentRoundNumber == roundCount)
             {
                 nextRoundButton.setLabel(FINISH_BUTTON_TEXT);
@@ -542,7 +538,7 @@ public class JeopardyGame
         {
             categoryLabels[categoryIndex] = new JLabel(categoriesToUse[categoryIndex].getName());
             categoryLabels[categoryIndex].setBackground(categoryBackgroundColor);
-            categoryLabels[categoryIndex].setForeground(categoryTextColor);
+            categoryLabels[categoryIndex].setForeground(Color.WHITE);
             categoryLabels[categoryIndex].setHorizontalAlignment(JLabel.CENTER);
             categoryLabels[categoryIndex].setFont(categoryLabelFont);
 
@@ -750,6 +746,7 @@ public class JeopardyGame
          */
         public void actionPerformed(ActionEvent event)
         {
+            Answer answer = answerDialog.getAnswer();
             if (answerDialog.correctQuestionPicked())
             {
                 updateScore(answerDialog.getAnswer().getPointReward());
@@ -759,6 +756,20 @@ public class JeopardyGame
                 updateScore(-answerDialog.getAnswer().getPointReward());
             } // end of if (answerDialog.correctQuestionPicked())
 
+            for (int categoryIndex = 0; categoryIndex < categoriesToUse.length; categoryIndex++)
+            {
+                Category currentCategory = allCategories[categoryIndex];
+                
+                Answer[] allAnswers = currentCategory.getAllAnswers();
+                for (int answerIndex = 0; answerIndex < allAnswers.length; answerIndex++)
+                {
+                    if (answer == allAnswers[answerIndex])
+                    {
+                        categoryLabels[categoryIndex].setForeground(Color.WHITE);
+                    }
+                } // end of for (int answerIndex = 0; answerIndex < ANSWER_COUNT; answerIndex++)
+            } // end of for (int categoryIndex = 0; categoryIndex < CATEGORY_COUNT; categoryIndex++)
+            
             frame.setEnabled(true);
         } // end of method actionPerformed(ActionEvent event)
 
@@ -786,6 +797,7 @@ public class JeopardyGame
                         answerButtons[categoryIndex][answerIndex].setEnabled(false);
                         frame.setEnabled(false);
                         answerButtons[categoryIndex][answerIndex].setBackground(Color.GRAY);
+                        categoryLabels[categoryIndex].setForeground(Color.RED);
                         answerDialogManager.createAnswerDialog(categoriesToUse[categoryIndex].getAnswer((answerIndex + 1) * ANSWER_SCORE_INCREMENT));
                     } // end of if (source == answerButtons[categoryIndex][answerIndex])
                 } // end of for (int categoryIndex = 0; categoryIndex < CATEGORY_COUNT; categoryIndex++)
