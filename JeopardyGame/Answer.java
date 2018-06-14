@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 /**
- * An answer in the game of jeopardy.
+ * An answer in the game of Jeopardy.
  *
  * @author Devdigvijay Singh
  * @version 3.0 2018-05-30

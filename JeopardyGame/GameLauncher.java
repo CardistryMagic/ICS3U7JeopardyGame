@@ -272,7 +272,7 @@ public class GameLauncher
   /*
   * Imports the fonts necessary to create the loading frame.
   */
-  private void loadFonts()
+  private void importFonts()
   {
     try
     {
@@ -291,7 +291,7 @@ public class GameLauncher
       // Display error dialog.
       displayErrorDialog("ERROR: Unable to locate font resources.");
     } // end of catch (FontFormatException exception)
-  } // end of method loadFonts()
+  } // end of method importFonts()
 
   /*
   * Creates the check box panel for categories.
@@ -592,39 +592,60 @@ public class GameLauncher
   */
   private void makeFrame()
   {
+    // Calculate frame width and height based on pre-defined constants and number of categories.
     frameWidth = FRAME_WIDTH;
     frameHeight = (CHECK_BOX_HEIGHT * allCategories.length) + JEOPARDY_BANNER_HEIGHT + BOTTOM_PANEL_HEIGHT;
 
+    // Get screen dimensions.
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
+    // Create frame.
     gameLauncherFrame = new JFrame(WINDOW_TITLE);
     gameLauncherFrame.setPreferredSize(new Dimension(frameWidth, frameHeight));
     gameLauncherFrame.getContentPane().setBackground(new Color(WINDOW_BACKGROUND_COLOR[0], WINDOW_BACKGROUND_COLOR[1], WINDOW_BACKGROUND_COLOR[2]));
     gameLauncherFrame.setLayout(new BorderLayout());
+
+    // Center frame on screen.
     int xLocation = Math.round((screenSize.width - FRAME_WIDTH)/2);
     int yLocation = Math.round((screenSize.height - FRAME_HEIGHT)/2);
     gameLauncherFrame.setLocation(xLocation, yLocation);
 
-    loadFonts();
+    // Import necessary fonts.
+    importFonts();
 
+    // Create Jeopardy banner.
     createJeopardyBanner();
+
+    // Add Jeopardy banner to frame.
     gameLauncherFrame.add(jeopardyLogoPanel, BorderLayout.PAGE_START);
 
+    // Create control panel.
     createControlPanel();
+
+    // Add control panel to frame.
     gameLauncherFrame.add(bottomControlPanel, BorderLayout.PAGE_END);
 
+    // Create center panel.
     frameCenterPanel = new JPanel();
     frameCenterPanel.setLayout(new FlowLayout(FlowLayout.CENTER, CENTER_PANEL_MARGINS, 0));
     frameCenterPanel.setBackground(new Color(WINDOW_BACKGROUND_COLOR[0], WINDOW_BACKGROUND_COLOR[1], WINDOW_BACKGROUND_COLOR[2]));
 
+    // Create category panel.
     createCategoryPanel();
+
+    // Add category panel to center panel.
     frameCenterPanel.add(categoriesCheckBoxPanel);
 
+    // Create numerical choices panel.
     createNumericalChoicePanel();
+
+    // Add numerical choices panel to center panel.
     frameCenterPanel.add(numericalChoicesPanel);
 
+    // Add center panel to frame.
     gameLauncherFrame.add(frameCenterPanel, BorderLayout.CENTER);
 
+    // Display frame.
     gameLauncherFrame.pack();
     gameLauncherFrame.setVisible(true);
   } // end of method makeFrame()
@@ -636,21 +657,31 @@ public class GameLauncher
   */
   private class ControlPanelListener implements ActionListener
   {
+    /**
+     * Listens to events from the control panel.
+     *
+     * @param event an event from the control panel
+     */
     public void actionPerformed(ActionEvent event)
     {
       Object source = event.getSource();
 
       if (source == quitButton)
       {
+        // Terminate program.
         quit();
       } // end of if (source == quitButton)
       else if (source == reloadButton)
       {
+        // Dispose of current game launcher frame.
         gameLauncherFrame.dispose();
+
+        // Create new splash screen.
         new SplashScreen();
       } // end of if (source == reloadButton)
       else if (source == startGameButton)
       {
+        // Start Jeopardy game.
         launchGame();
       } // end of if (source == startGameButton)
     } // end of method actionPerformed(ActionEvent event)
@@ -667,7 +698,10 @@ public class GameLauncher
 
       if (source == addPlayerButton)
       {
+        // Increment player count.
         numberOfPlayers++;
+
+        // Update label.
         numberOfPlayersLabel.setText(Integer.toString(numberOfPlayers));
 
         if (numberOfPlayers == JeopardyGame.MAXIMUM_NUMBER_OF_PLAYERS)
@@ -678,7 +712,10 @@ public class GameLauncher
       } // end of if (source == addPlayerButton)
       else if (source == removePlayerButton)
       {
+        // Increment player count.
         numberOfPlayers--;
+
+        // Update label.
         numberOfPlayersLabel.setText(Integer.toString(numberOfPlayers));
 
         if (numberOfPlayers == JeopardyGame.MINIMUM_NUMBER_OF_PLAYERS)
@@ -689,7 +726,10 @@ public class GameLauncher
       } // end of if (source == removePlayerButton)
       else if (source == addRoundButton)
       {
+        // Increment round count.
         numberOfRounds++;
+
+        // Update label.
         numberOfRoundsLabel.setText(Integer.toString(numberOfRounds));
 
         if (numberOfRounds == JeopardyGame.MAXIMUM_NUMBER_OF_ROUNDS)
@@ -700,7 +740,10 @@ public class GameLauncher
       } // end of if (source == addRoundButton)
       else if (source == removeRoundButton)
       {
+        // Increment round count.
         numberOfRounds--;
+
+        // Update label.
         numberOfRoundsLabel.setText(Integer.toString(numberOfRounds));
 
         if (numberOfRounds == JeopardyGame.MINIMUM_NUMBER_OF_ROUNDS)
@@ -711,7 +754,10 @@ public class GameLauncher
       } // end of if (source == removeRoundButton)
       else if (source == addAnswerButton)
       {
+        // Increment answer count.
         numberOfAnswers++;
+
+        // Update label.
         numberOfAnswersLabel.setText(Integer.toString(numberOfAnswers));
 
         if (numberOfAnswers == JeopardyGame.MAXIMUM_NUMBER_OF_ANSWERS)
@@ -722,7 +768,10 @@ public class GameLauncher
       } // end of if (source == addAnswerButton)
       else if (source == removeAnswerButton)
       {
+        // Increment answer count.
         numberOfAnswers--;
+
+        // Update label.
         numberOfAnswersLabel.setText(Integer.toString(numberOfAnswers));
 
         if (numberOfAnswers == JeopardyGame.MINIMUM_NUMBER_OF_ANSWERS)

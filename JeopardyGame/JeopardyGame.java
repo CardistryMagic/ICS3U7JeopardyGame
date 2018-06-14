@@ -1,33 +1,33 @@
-import java.util.ArrayList;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import javax.swing.JTextArea;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.Font;
 import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.Graphics;
 import java.awt.GridLayout;
-import java.awt.FontFormatException;
-import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.awt.Image;
+import java.awt.Toolkit;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.IOException;
+import java.util.ArrayList;
+import javax.swing.border.EmptyBorder;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import javax.swing.JOptionPane;
-import javax.swing.JDialog;
-import javax.swing.border.EmptyBorder;
-import java.awt.Toolkit;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
 
 /**
  * An object for the game of jeopardy.
@@ -218,11 +218,14 @@ public class JeopardyGame
     private Font endScreenScoresFont;
     private HighScoreManager highScoreManager;
 
+    /* constructors */
+
     /**
      * Creates a new JeopardyGame with default characteristics.
      */
     public JeopardyGame()
     {
+      // Initialize all fields with default values.
         categoriesToUse = new Category[CATEGORY_COUNT];
         allCategories = new Category[CATEGORY_COUNT];
         playerCount = MINIMUM_NUMBER_OF_PLAYERS;
@@ -307,6 +310,7 @@ public class JeopardyGame
      */
     public void updateScore(int pointValue)
     {
+      // Increment scores.
         playerRoundScores[playerTurns] = playerRoundScores[playerTurns] + pointValue;
         playerGameScores[playerTurns] = playerGameScores[playerTurns] + pointValue;
 
@@ -322,6 +326,7 @@ public class JeopardyGame
                 playerGameScores[playerTurns] = 0;
             } // end of if (playerGameScores[playerTurns])
 
+            // Update labels.
             playerGameScoreLabels[playerTurns].setText(NOT_PLAYER_TURN_INDICATOR + "Player " + (playerTurns + 1) + ": " + playerGameScores[playerTurns]);
             playerRoundScoreLabels[playerTurns].setText(NOT_PLAYER_TURN_INDICATOR + "Player " + (playerTurns + 1) + ": " + playerRoundScores[playerTurns]);
 
@@ -759,7 +764,7 @@ public class JeopardyGame
             for (int categoryIndex = 0; categoryIndex < categoriesToUse.length; categoryIndex++)
             {
                 Category currentCategory = allCategories[categoryIndex];
-                
+
                 Answer[] allAnswers = currentCategory.getAllAnswers();
                 for (int answerIndex = 0; answerIndex < allAnswers.length; answerIndex++)
                 {
@@ -769,7 +774,7 @@ public class JeopardyGame
                     }
                 } // end of for (int answerIndex = 0; answerIndex < ANSWER_COUNT; answerIndex++)
             } // end of for (int categoryIndex = 0; categoryIndex < CATEGORY_COUNT; categoryIndex++)
-            
+
             frame.setEnabled(true);
         } // end of method actionPerformed(ActionEvent event)
 
@@ -787,6 +792,7 @@ public class JeopardyGame
          */
         public void actionPerformed(ActionEvent event)
         {
+          Toolkit.getDefaultToolkit().beep();
             Object source = event.getSource();
             for (int answerIndex = 0; answerIndex < answerCount; answerIndex++)
             {

@@ -17,7 +17,7 @@ public class HighScoreManager
     /* class constants */
     private static final String DATA_FILE_SOURCE = "resources/data_files/highscore.data";
 
-    // instance variables
+    /* instance fields */
     private int highScore;
     PrintWriter outputFile;
     BufferedReader fileReader;
@@ -25,6 +25,8 @@ public class HighScoreManager
     private boolean canBeRead;
     private String score;
 
+    /* constructors */
+    
     /**
      * Sets the default values of the instance fields.
      */
@@ -113,7 +115,7 @@ public class HighScoreManager
             }
             catch (IOException ioexception)
             {
-              
+
             } // end of catch (IOException ioexception)
         } // end of if (score > highScore)
     } // end of method addScore(int score)
